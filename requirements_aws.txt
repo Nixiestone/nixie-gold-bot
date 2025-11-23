@@ -1,0 +1,9 @@
+pandas>=2.0.0
+numpy>=1.24.0
+MetaTrader5>=5.0.45
+python-telegram-bot>=20.0
+schedule>=1.2.0
+ta>=0.11.0
+python-dotenv>=1.0.0
+pytz>=2023.3
+colorama>=0.4.6
