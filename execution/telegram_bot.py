@@ -47,7 +47,7 @@ class TelegramNotifier:
 *Direction:* {signal['signal']}
 *Confidence:* {signal['confidence']}%
 
-📊 *Entry Details:*
+[DATA] *Entry Details:*
 Entry Price: `${signal['entry_price']:.2f}`
 Stop Loss: `${signal['stop_loss']:.2f}`
 Risk: `{signal['pips_risk']:.1f} pips`
@@ -98,7 +98,7 @@ _Nixie's Quant Project by Blessing Omoregie_
     async def send_startup_message(self):
         """Send message when bot starts"""
         message = """
-🤖 *Nixie's Gold Bot Started!*
+[BOT] *Nixie's Gold Bot Started!*
 
 The bot is now monitoring gold markets and will send signals when high-probability setups are detected.
 
@@ -108,7 +108,7 @@ The bot is now monitoring gold markets and will send signals when high-probabili
 • Scan interval: {interval} minutes
 
 🎯 *Target Win Rate:* 65-75%
-📊 *Min Risk/Reward:* 1:{min_rr}
+[DATA] *Min Risk/Reward:* 1:{min_rr}
 
 Bot is active and scanning! 
         """.format(

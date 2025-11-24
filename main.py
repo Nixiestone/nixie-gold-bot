@@ -10,6 +10,15 @@ import sys
 import logging
 from colorama import Fore, Style, init
 
+import sys
+import os
+import io
+
+# Force UTF-8 encoding for Windows
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+
 # Initialize colorama for colored output
 init(autoreset=True)
 
@@ -53,7 +62,7 @@ class NixieGoldBot:
         self.auto_trade_enabled = config.AUTO_TRADE  # Safety: disabled by default
         
         print(Fore.CYAN + "=" * 60)
-        print(Fore.CYAN + "🤖  NIXIE'S GOLD BOT")
+        print(Fore.CYAN + "  NIXIE'S GOLD BOT")
         print(Fore.CYAN + "    Advanced Quantitative Trading System")
         print(Fore.CYAN + "    by Blessing Omoregie")
         print(Fore.CYAN + "=" * 60)
@@ -61,34 +70,34 @@ class NixieGoldBot:
     def initialize(self):
         """Initialize bot and connections"""
         try:
-            print(Fore.YELLOW + "\n🔧 Initializing bot...")
+            print(Fore.YELLOW + "\n Initializing bot...")
             
             # Validate configuration
             if not config.validate_config():
-                print(Fore.RED + "❌ Configuration validation failed!")
+                print(Fore.RED + "[FAIL] Configuration validation failed!")
                 return False
             
             # Connect to MT5
-            print(Fore.YELLOW + "📡 Connecting to MetaTrader 5...")
+            print(Fore.YELLOW + "[CONNECT] Connecting to MetaTrader 5...")
             if not self.handler.connect_mt5():
-                print(Fore.RED + "❌ Failed to connect to MT5")
+                print(Fore.RED + "[FAIL] Failed to connect to MT5")
                 return False
             
             # Load ML model if available
             if config.USE_ML_FILTER:
-                print(Fore.YELLOW + "🤖 Loading ML model...")
+                print(Fore.YELLOW + "[BOT] Loading ML model...")
                 self.ml_filter.load_model()
             
             # Send startup message to Telegram
-            print(Fore.YELLOW + "📱 Sending startup notification...")
+            print(Fore.YELLOW + "[TELEGRAM] Sending startup notification...")
             import asyncio
             asyncio.run(self.telegram.send_startup_message())
             
-            print(Fore.GREEN + "✅ Bot initialized successfully!")
+            print(Fore.GREEN + "[SUCCESS] Bot initialized successfully!")
             return True
             
         except Exception as e:
-            print(Fore.RED + f"❌ Initialization error: {e}")
+            print(Fore.RED + f"[FAIL] Initialization error: {e}")
             logging.error(f"Initialization error: {e}")
             return False
     
@@ -97,43 +106,43 @@ class NixieGoldBot:
         try:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             print(Fore.CYAN + f"\n{'=' * 60}")
-            print(Fore.CYAN + f"🔍 Scanning for signals at {timestamp}")
+            print(Fore.CYAN + f"[SCAN] Scanning for signals at {timestamp}")
             print(Fore.CYAN + f"{'=' * 60}")
             
             # Check if we should trade now
             should_trade, reason = self.market_hours.should_trade_now()
             if not should_trade:
-                print(Fore.YELLOW + f"⏸️  {reason}")
+                print(Fore.YELLOW + f"  {reason}")
                 return
             
             # Fetch market data
-            print(Fore.YELLOW + "📊 Fetching market data...")
+            print(Fore.YELLOW + "[DATA] Fetching market data...")
             df_h4 = self.handler.get_gold_data('H4', 200)
             df_m15 = self.handler.get_gold_data('M15', 500)
             
             if df_h4 is None or df_m15 is None:
-                print(Fore.RED + "❌ Failed to fetch market data")
+                print(Fore.RED + "[FAIL] Failed to fetch market data")
                 return
             
             # Calculate indicators
-            print(Fore.YELLOW + "🔢 Calculating technical indicators...")
+            print(Fore.YELLOW + "[CALC] Calculating technical indicators...")
             df_h4 = self.technical.calculate_all(df_h4)
             df_m15 = self.technical.calculate_all(df_m15)
             
             # Generate signal
-            print(Fore.YELLOW + "🧠 Analyzing market conditions...")
+            print(Fore.YELLOW + "[ANALYZE] Analyzing market conditions...")
             signal = self.signal_generator.generate_signal(df_h4, df_m15)
             
             if signal:
                 # Apply ML filter
                 if config.USE_ML_FILTER:
-                    print(Fore.YELLOW + "🤖 Applying ML filter...")
+                    print(Fore.YELLOW + "[BOT] Applying ML filter...")
                     passes_ml, ml_confidence = self.ml_filter.should_take_signal(
                         df_h4, df_m15, signal
                     )
                     
                     if not passes_ml:
-                        print(Fore.RED + f"❌ Signal rejected by ML filter (confidence: {ml_confidence:.2%})")
+                        print(Fore.RED + f"[FAIL] Signal rejected by ML filter (confidence: {ml_confidence:.2%})")
                         return
                     
                     # Update signal with ML confidence
@@ -147,7 +156,7 @@ class NixieGoldBot:
             
         except Exception as e:
             error_msg = f"Error in scan_for_signals: {e}"
-            print(Fore.RED + f"❌ {error_msg}")
+            print(Fore.RED + f"[FAIL] {error_msg}")
             logging.error(error_msg)
             
             # Send error to Telegram
@@ -161,7 +170,7 @@ class NixieGoldBot:
         """Process and send approved signal"""
         try:
             print(Fore.GREEN + "\n" + "=" * 60)
-            print(Fore.GREEN + "🚀 TRADING SIGNAL GENERATED!")
+            print(Fore.GREEN + "[SIGNAL] TRADING SIGNAL GENERATED!")
             print(Fore.GREEN + "=" * 60)
             
             # Display signal details
@@ -181,35 +190,35 @@ class NixieGoldBot:
             
             # Send to Telegram
             if not config.DRY_RUN:
-                print(Fore.YELLOW + "\n📱 Sending signal to Telegram...")
+                print(Fore.YELLOW + "\n[TELEGRAM] Sending signal to Telegram...")
                 import asyncio
                 
                 # Send to all subscribers
                 success = asyncio.run(self.multi_user_telegram.send_signal(signal))
                 
                 if success:
-                    print(Fore.GREEN + f"✅ Signal sent to {success} subscriber(s)!")
+                    print(Fore.GREEN + f"[SUCCESS] Signal sent to {success} subscriber(s)!")
                     self.signals_today += 1
                     self.last_signal_time = datetime.now()
                     
                     # Auto-execute trade if enabled
                     if self.auto_trade_enabled:
-                        print(Fore.YELLOW + "\n🤖 Auto-trading enabled. Executing trade...")
+                        print(Fore.YELLOW + "\n[BOT] Auto-trading enabled. Executing trade...")
                         if self.live_trader.execute_trade(signal):
-                            print(Fore.GREEN + "✅ Trade executed successfully!")
+                            print(Fore.GREEN + "[SUCCESS] Trade executed successfully!")
                         else:
-                            print(Fore.RED + "❌ Trade execution failed")
+                            print(Fore.RED + "[FAIL] Trade execution failed")
                 else:
-                    print(Fore.RED + "❌ Failed to send signal")
+                    print(Fore.RED + "[FAIL] Failed to send signal")
             else:
-                print(Fore.YELLOW + "\n⚠️  DRY RUN MODE - Signal not sent to Telegram")
+                print(Fore.YELLOW + "\n[WARN]  DRY RUN MODE - Signal not sent to Telegram")
                 print(Fore.YELLOW + "   Set ENVIRONMENT=production in .env to enable live signals")
             
             # Log signal
             logging.info(f"Signal generated: {signal['signal']} at {signal['entry_price']}")
             
         except Exception as e:
-            print(Fore.RED + f"❌ Error processing signal: {e}")
+            print(Fore.RED + f"[FAIL] Error processing signal: {e}")
             logging.error(f"Error processing signal: {e}")
     
     def run(self):
@@ -217,7 +226,7 @@ class NixieGoldBot:
         try:
             # Initialize
             if not self.initialize():
-                print(Fore.RED + "❌ Failed to initialize bot. Exiting.")
+                print(Fore.RED + "[FAIL] Failed to initialize bot. Exiting.")
                 return
             
             self.running = True
@@ -225,14 +234,14 @@ class NixieGoldBot:
             # Schedule scanning
             schedule.every(config.SCAN_INTERVAL_MINUTES).minutes.do(self.scan_for_signals)
             
-            print(Fore.GREEN + f"\n✅ Bot is now running!")
-            print(Fore.CYAN + f"📊 Scanning every {config.SCAN_INTERVAL_MINUTES} minutes")
+            print(Fore.GREEN + f"\n[SUCCESS] Bot is now running!")
+            print(Fore.CYAN + f"[DATA] Scanning every {config.SCAN_INTERVAL_MINUTES} minutes")
             print(Fore.CYAN + f"💰 Risk per trade: {config.RISK_PERCENT}%")
             print(Fore.CYAN + f"🎯 Symbol: {config.SYMBOL}")
-            print(Fore.CYAN + f"🤖 ML Filter: {'Enabled' if config.USE_ML_FILTER else 'Disabled'}")
+            print(Fore.CYAN + f"[BOT] ML Filter: {'Enabled' if config.USE_ML_FILTER else 'Disabled'}")
             
             if config.DRY_RUN:
-                print(Fore.YELLOW + "\n⚠️  Running in DRY RUN mode (no signals sent)")
+                print(Fore.YELLOW + "\n[WARN]  Running in DRY RUN mode (no signals sent)")
             
             print(Fore.CYAN + "\n" + "=" * 60)
             print(Fore.WHITE + "Press Ctrl+C to stop the bot")
@@ -250,28 +259,28 @@ class NixieGoldBot:
             print(Fore.YELLOW + "\n\n⏸️  Bot stopped by user")
             self.shutdown()
         except Exception as e:
-            print(Fore.RED + f"\n❌ Fatal error: {e}")
+            print(Fore.RED + f"\n[FAIL] Fatal error: {e}")
             logging.error(f"Fatal error: {e}")
             self.shutdown()
     
     def shutdown(self):
         """Clean shutdown"""
         try:
-            print(Fore.YELLOW + "\n🔌 Shutting down...")
+            print(Fore.YELLOW + "\n[SHUTDOWN] Shutting down...")
             
             # Disconnect from MT5
             self.handler.disconnect_mt5()
             
             # Send shutdown message
             if self.signals_today > 0:
-                msg = f"🤖 Bot stopped. Signals today: {self.signals_today}"
+                msg = f"[BOT] Bot stopped. Signals today: {self.signals_today}"
                 send_text_sync(msg)
             
-            print(Fore.GREEN + "✅ Shutdown complete")
+            print(Fore.GREEN + "[SUCCESS] Shutdown complete")
             self.running = False
             
         except Exception as e:
-            print(Fore.RED + f"❌ Error during shutdown: {e}")
+            print(Fore.RED + f"[FAIL] Error during shutdown: {e}")
 
 
 def main():

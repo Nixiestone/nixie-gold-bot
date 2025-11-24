@@ -135,14 +135,14 @@ if __name__ == "__main__":
     with open('launcher.py', 'w', encoding='utf-8') as f:
         f.write(launcher_code)
     
-    print("✅ Created launcher.py")
+    print("[SUCCESS] Created launcher.py")
 
 def create_directories():
     """Create necessary directories"""
     dirs = ['logs', 'models', 'data']
     for dir_name in dirs:
         Path(dir_name).mkdir(exist_ok=True)
-        print(f"✅ Created directory: {dir_name}")
+        print(f"[SUCCESS] Created directory: {dir_name}")
 
 def create_startup_batch():
     """Create Windows startup batch file"""
@@ -156,7 +156,7 @@ pause
     with open('start_bot.bat', 'w') as f:
         f.write(batch_content)
     
-    print("✅ Created start_bot.bat")
+    print("[SUCCESS] Created start_bot.bat")
 
 def create_requirements_minimal():
     """Create minimal requirements for AWS"""
@@ -175,7 +175,7 @@ colorama>=0.4.6
     with open('requirements_aws.txt', 'w') as f:
         f.write(requirements)
     
-    print("✅ Created requirements_aws.txt (minimal version)")
+    print("[SUCCESS] Created requirements_aws.txt (minimal version)")
 
 def create_env_template():
     """Create .env template if it doesn't exist"""
@@ -200,10 +200,10 @@ ENVIRONMENT=production
         with open('.env', 'w') as f:
             f.write(env_template)
         
-        print("✅ Created .env template")
-        print("⚠️  IMPORTANT: Edit .env file with your actual credentials!")
+        print("[SUCCESS] Created .env template")
+        print("[WARN]  IMPORTANT: Edit .env file with your actual credentials!")
     else:
-        print("✅ .env file already exists")
+        print("[SUCCESS] .env file already exists")
 
 def create_health_check():
     """Create health check script"""
@@ -250,7 +250,7 @@ print("Health check complete!")
     with open('health_check.py', 'w', encoding='utf-8') as f:
         f.write(health_check)
     
-    print("✅ Created health_check.py")
+    print("[SUCCESS] Created health_check.py")
 
 def optimize_config():
     """Update config.py for AWS optimization"""

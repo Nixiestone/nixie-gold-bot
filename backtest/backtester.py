@@ -35,14 +35,14 @@ class Backtester:
             initial_capital: Starting balance
         """
         try:
-            print("📊 Starting Backtest...")
+            print("[DATA] Starting Backtest...")
             print(f"Period: {start_date} to {end_date}")
             print(f"Initial Capital: ${initial_capital:,.2f}")
             print("=" * 60)
             
             # Connect to MT5
             if not self.handler.connect_mt5():
-                print("❌ Failed to connect to MT5")
+                print("[ERROR] Failed to connect to MT5")
                 return None
             
             capital = initial_capital
@@ -55,11 +55,11 @@ class Backtester:
             df_m15 = self.handler.get_gold_data('M15', 10000)
             
             if df_h4 is None or df_m15 is None:
-                print("❌ Failed to fetch data")
+                print("[ERROR] Failed to fetch data")
                 return None
             
             # Calculate indicators
-            print("🔢 Calculating indicators...")
+            print("[CALC] Calculating indicators...")
             df_h4 = self.technical.calculate_all(df_h4)
             df_m15 = self.technical.calculate_all(df_m15)
             
@@ -70,7 +70,7 @@ class Backtester:
             df_h4 = df_h4[(df_h4.index >= start) & (df_h4.index <= end)]
             df_m15 = df_m15[(df_m15.index >= start) & (df_m15.index <= end)]
             
-            print(f"📊 Analyzing {len(df_h4)} H4 bars...")
+            print(f"[DATA] Analyzing {len(df_h4)} H4 bars...")
             
             # Simulate trading
             signals_checked = 0
@@ -114,11 +114,11 @@ class Backtester:
             
             # Calculate final metrics
             print("\n" + "=" * 60)
-            print("✅ Backtest Complete!")
+            print("[SUCCESS] Backtest Complete!")
             print("=" * 60)
             
             if len(self.trades) == 0:
-                print("\n⚠️  NO TRADES GENERATED")
+                print("\n[WARN]  NO TRADES GENERATED")
                 print("This could mean:")
                 print("  1. Strategy conditions are very strict (GOOD - selective bot)")
                 print("  2. Historical period had no suitable setups")
@@ -140,7 +140,7 @@ class Backtester:
             return metrics
             
         except Exception as e:
-            print(f"❌ Backtest error: {e}")
+            print(f"[ERROR] Backtest error: {e}")
             import traceback
             traceback.print_exc()
             return None
@@ -285,10 +285,10 @@ class Backtester:
     def _print_results(self, metrics):
         """Print backtest results"""
         if not metrics:
-            print("\n⚠️  No metrics to display (no trades generated)")
+            print("\n[WARN]  No metrics to display (no trades generated)")
             return
             
-        print(f"\n📊 BACKTEST RESULTS")
+        print(f"\n[DATA] BACKTEST RESULTS")
         print("=" * 60)
         print(f"Initial Capital:    ${metrics['initial_capital']:,.2f}")
         print(f"Final Capital:      ${metrics['final_capital']:,.2f}")
@@ -317,5 +317,5 @@ if __name__ == "__main__":
     results = backtester.run_backtest(start_date, end_date, initial_capital=10000)
     
     if results:
-        print("\n✅ Backtest complete! Check results above.")
+        print("\n[SUCCESS] Backtest complete! Check results above.")
         

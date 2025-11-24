@@ -64,7 +64,7 @@ class MLSignalFilter:
             return np.array(features).reshape(1, -1)
             
         except Exception as e:
-            print(f"❌ Error extracting features: {e}")
+            print(f"[ERROR] Error extracting features: {e}")
             return None
     
     def train_model(self, historical_data, labels):
@@ -95,7 +95,7 @@ class MLSignalFilter:
             y_pred = self.model.predict(X_test)
             accuracy = accuracy_score(y_test, y_pred)
             
-            print(f"✅ Model trained! Accuracy: {accuracy:.2%}")
+            print(f"[SUCCESS] Model trained! Accuracy: {accuracy:.2%}")
             print("\n Classification Report:")
             print(classification_report(y_test, y_pred))
             
@@ -104,7 +104,7 @@ class MLSignalFilter:
             return accuracy
             
         except Exception as e:
-            print(f"❌ Error training model: {e}")
+            print(f"[ERROR] Error training model: {e}")
             return 0
     
     def predict(self, features):
@@ -126,7 +126,7 @@ class MLSignalFilter:
             return prediction, probability[1]  
             
         except Exception as e:
-            print(f"❌ Error making prediction: {e}")
+            print(f"[ERROR] Error making prediction: {e}")
             return 1, 0.5  
     
     def should_take_signal(self, df_h4, df_m15, signal_data):
@@ -148,14 +148,14 @@ class MLSignalFilter:
             passes = probability >= config.ML_CONFIDENCE_THRESHOLD
             
             if passes:
-                print(f"✅ ML Filter: PASS (Confidence: {probability:.2%})")
+                print(f"[SUCCESS] ML Filter: PASS (Confidence: {probability:.2%})")
             else:
-                print(f"❌ ML Filter: FAIL (Confidence: {probability:.2%} < {config.ML_CONFIDENCE_THRESHOLD:.2%})")
+                print(f"[ERROR] ML Filter: FAIL (Confidence: {probability:.2%} < {config.ML_CONFIDENCE_THRESHOLD:.2%})")
             
             return passes, probability
             
         except Exception as e:
-            print(f"❌ Error in ML filter: {e}")
+            print(f"[ERROR] Error in ML filter: {e}")
             return True, 0.5  
     
     def save_model(self):
@@ -166,7 +166,7 @@ class MLSignalFilter:
                 pickle.dump(self.model, f)
             print(f"Model saved to {self.model_path}")
         except Exception as e:
-            print(f"❌ Error saving model: {e}")
+            print(f"[ERROR] Error saving model: {e}")
     
     def load_model(self):
         """Load trained model from disk"""
@@ -180,7 +180,7 @@ class MLSignalFilter:
                 print(f"  No trained model found at {self.model_path}")
                 return False
         except Exception as e:
-            print(f"❌ Error loading model: {e}")
+            print(f"[ERROR] Error loading model: {e}")
             return False
     
     def train_from_real_trades(self):
@@ -203,15 +203,15 @@ class MLSignalFilter:
             accuracy = self.train_model(X, y)
             
             if accuracy > 0.6:
-                print(f"✅ Model trained successfully! Accuracy: {accuracy:.2%}")
+                print(f"[SUCCESS] Model trained successfully! Accuracy: {accuracy:.2%}")
                 return True
             else:
-                print(f"⚠️  Model accuracy too low: {accuracy:.2%}")
+                print(f"[WARN]  Model accuracy too low: {accuracy:.2%}")
                 print("   Collect more trades for better performance")
                 return False
                 
         except Exception as e:
-            print(f"❌ Error training from real trades: {e}")
+            print(f"[ERROR] Error training from real trades: {e}")
             return False
         """
         Generate synthetic training data from historical patterns
@@ -254,9 +254,9 @@ if __name__ == "__main__":
     ml_filter = MLSignalFilter()
     
     if ml_filter.load_model():
-        print("✅ Model loaded successfully")
+        print("[SUCCESS] Model loaded successfully")
     else:
-        print("⚠️  No model found. You can train one using historical data.")
+        print("[WARN]  No model found. You can train one using historical data.")
     
     print("\nTo train a model, collect historical trade data with outcomes,")
     print("   then use ml_filter.train_model(features, labels)")

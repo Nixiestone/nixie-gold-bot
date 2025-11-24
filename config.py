@@ -93,12 +93,12 @@ def validate_config():
         errors.append("MT5_SERVER not set in .env file")
     
     if errors:
-        print("❌ Configuration Errors:")
+        print("[ERROR] Configuration Errors:")
         for error in errors:
             print(f"  - {error}")
         return False
     
-    print("✅ Configuration validated successfully!")
+    print("[SUCCESS] Configuration validated successfully!")
     return True
 
 if __name__ == "__main__":

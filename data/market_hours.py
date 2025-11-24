@@ -76,7 +76,7 @@ class MarketHours:
             return asian_high, asian_low
             
         except Exception as e:
-            print(f"❌ Error calculating Asian range: {e}")
+            print(f"[ERROR] Error calculating Asian range: {e}")
             return None, None
     
     def get_previous_day_levels(self, df):
@@ -91,7 +91,7 @@ class MarketHours:
                 'pdc': yesterday['Close']  # Previous Day Close
             }
         except Exception as e:
-            print(f"❌ Error getting previous day levels: {e}")
+            print(f"[ERROR] Error getting previous day levels: {e}")
             return None
     
     def should_trade_now(self, timestamp=None):
@@ -151,10 +151,10 @@ if __name__ == "__main__":
     print("🕐 Current Time Analysis:")
     print(f"GMT Hour: {market.get_current_hour_gmt()}:00")
     print(f"Current Session: {market.get_current_session()}")
-    print(f"London Session: {'✅ Yes' if market.is_london_session() else '❌ No'}")
-    print(f"NY Session: {'✅ Yes' if market.is_ny_session() else '❌ No'}")
-    print(f"Session Overlap: {'✅ Yes' if market.get_session_overlap() else '❌ No'}")
+    print(f"London Session: {'[SUCCESS] Yes' if market.is_london_session() else '[ERROR] No'}")
+    print(f"NY Session: {'[SUCCESS] Yes' if market.is_ny_session() else '[ERROR] No'}")
+    print(f"Session Overlap: {'[SUCCESS] Yes' if market.get_session_overlap() else '[ERROR] No'}")
     
     should_trade, reason = market.should_trade_now()
-    print(f"\n🎯 Should Trade Now: {'✅ Yes' if should_trade else '❌ No'}")
+    print(f"\n🎯 Should Trade Now: {'[SUCCESS] Yes' if should_trade else '[ERROR] No'}")
     print(f"Reason: {reason}")

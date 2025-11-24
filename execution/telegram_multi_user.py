@@ -41,7 +41,7 @@ class MultiUserTelegramBot:
         if chat_id not in self.subscribers:
             self.subscribers.append(chat_id)
             self.save_subscribers()
-            print(f"✅ Added subscriber: {chat_id} ({username})")
+            print(f"[SUCCESS] Added subscriber: {chat_id} ({username})")
             return True
         return False
     
@@ -50,7 +50,7 @@ class MultiUserTelegramBot:
         if chat_id in self.subscribers:
             self.subscribers.remove(chat_id)
             self.save_subscribers()
-            print(f"❌ Removed subscriber: {chat_id}")
+            print(f"[ERROR] Removed subscriber: {chat_id}")
             return True
         return False
     
@@ -68,7 +68,7 @@ class MultiUserTelegramBot:
                 )
                 success_count += 1
             except TelegramError as e:
-                print(f"⚠️  Failed to send to {chat_id}: {e}")
+                print(f"[WARN]  Failed to send to {chat_id}: {e}")
                 failed.append(chat_id)
         
         # Remove failed chat IDs (user blocked bot or deleted account)
@@ -94,7 +94,7 @@ class MultiUserTelegramBot:
 *Direction:* {signal['signal']}
 *Confidence:* {signal['confidence']}%
 
-📊 *Entry Details:*
+[DATA] *Entry Details:*
 Entry Price: `${signal['entry_price']:.2f}`
 Stop Loss: `${signal['stop_loss']:.2f}`
 Risk: `{signal['pips_risk']:.1f} pips`
@@ -153,7 +153,7 @@ class InteractiveTelegramBot:
 
 You've been subscribed to trading signals!
 
-📊 *What you'll receive:*
+[DATA] *What you'll receive:*
 • High-probability gold trading signals
 • Entry price and stop loss
 • Multiple take profit targets
@@ -202,12 +202,12 @@ _Developed by Blessing Omoregie (@nixiestone)_
         chat_id = update.effective_chat.id
         
         if chat_id in self.multi_user.subscribers:
-            status = "✅ *Active* - You're receiving signals"
+            status = "[SUCCESS] *Active* - You're receiving signals"
         else:
-            status = "❌ *Inactive* - Use /start to subscribe"
+            status = "[ERROR] *Inactive* - Use /start to subscribe"
         
         message = f"""
-📊 *Your Status:*
+[DATA] *Your Status:*
 {status}
 
 Chat ID: `{chat_id}`
@@ -220,7 +220,7 @@ Chat ID: `{chat_id}`
         total_subscribers = self.multi_user.get_subscriber_count()
         
         message = f"""
-📊 *Bot Statistics:*
+[DATA] *Bot Statistics:*
 
 Total Subscribers: {total_subscribers}
 Strategy: 6-Factor Confluence
@@ -247,8 +247,8 @@ Signals/Week: 1-3
         self.app.add_handler(CommandHandler("status", self.status_command))
         self.app.add_handler(CommandHandler("stats", self.stats_command))
         
-        print("🤖 Interactive Telegram bot started!")
-        print("📱 Users can now use /start to subscribe")
+        print("[BOT] Interactive Telegram bot started!")
+        print("[TELEGRAM] Users can now use /start to subscribe")
         print("Press Ctrl+C to stop")
         
         # Start the bot using run_polling (blocking)
@@ -269,7 +269,7 @@ def send_text_to_all(text):
 
 # Test/Demo
 if __name__ == "__main__":
-    print("🤖 Nixie's Multi-User Telegram Bot")
+    print("[BOT] Nixie's Multi-User Telegram Bot")
     print("=" * 60)
     
     import sys
@@ -283,7 +283,7 @@ if __name__ == "__main__":
         bot.run_interactive()  # No asyncio.run needed
     else:
         # Test broadcast
-        print("\n📊 Current Subscribers:")
+        print("\n[DATA] Current Subscribers:")
         bot = MultiUserTelegramBot()
         print(f"Total: {bot.get_subscriber_count()}")
         print(f"Chat IDs: {bot.subscribers}")

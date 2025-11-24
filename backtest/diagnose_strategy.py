@@ -15,13 +15,13 @@ from indicators.structural import StructuralLevels
 from strategy.regime_detector import RegimeDetector
 from data.market_hours import MarketHours
 
-print("🔍 STRATEGY DIAGNOSTIC TOOL")
+print("[SCAN] STRATEGY DIAGNOSTIC TOOL")
 print("=" * 60)
 
 # Connect and get data
 handler = DataHandler()
 if not handler.connect_mt5():
-    print("❌ Failed to connect to MT5")
+    print("[ERROR] Failed to connect to MT5")
     exit()
 
 print("\n📥 Fetching recent data...")
@@ -29,19 +29,19 @@ df_h4 = handler.get_gold_data('H4', 500)
 df_m15 = handler.get_gold_data('M15', 1000)
 
 if df_h4 is None or df_m15 is None:
-    print("❌ Failed to fetch data")
+    print("[ERROR] Failed to fetch data")
     handler.disconnect_mt5()
     exit()
 
 # Calculate indicators
-print("🔢 Calculating indicators...")
+print("[CALC] Calculating indicators...")
 tech = TechnicalIndicators()
 df_h4 = tech.calculate_all(df_h4)
 df_m15 = tech.calculate_all(df_m15)
 
 # Analyze last 100 bars
 print("\n" + "=" * 60)
-print("📊 ANALYZING LAST 100 H4 BARS")
+print("[DATA] ANALYZING LAST 100 H4 BARS")
 print("=" * 60)
 
 detector = RegimeDetector()
@@ -108,7 +108,7 @@ all_conditions = (favorable_count/100) * (session_ok_count/100) * (level_near_co
 print(f"\n📈 Probability of ALL conditions meeting: ~{all_conditions:.2f}%")
 
 if all_conditions < 1:
-    print("\n⚠️  Strategy is VERY SELECTIVE (< 1% of bars qualify)")
+    print("\n[WARN]  Strategy is VERY SELECTIVE (< 1% of bars qualify)")
     print("This means:")
     print("  ✓ GOOD: High quality signals only")
     print("  ✗ BAD: Very few trading opportunities")
@@ -119,7 +119,7 @@ if all_conditions < 1:
 
 # Show current indicator values
 print("\n" + "=" * 60)
-print("📊 CURRENT MARKET CONDITIONS")
+print("[DATA] CURRENT MARKET CONDITIONS")
 print("=" * 60)
 
 current_price = df_m15['Close'].iloc[-1]
@@ -152,5 +152,5 @@ else:
 handler.disconnect_mt5()
 
 print("\n" + "=" * 60)
-print("✅ Diagnostic complete!")
+print("[SUCCESS] Diagnostic complete!")
 print("=" * 60)
