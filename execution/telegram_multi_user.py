@@ -76,7 +76,7 @@ class MultiUserTelegramBot:
             if "bot was blocked" in str(e).lower():
                 self.remove_subscriber(chat_id)
         
-        print(f"📤 Sent to {success_count}/{len(self.subscribers)} subscribers")
+        print(f" Sent to {success_count}/{len(self.subscribers)} subscribers")
         return success_count
     
     async def send_signal(self, signal_data):
@@ -94,31 +94,31 @@ class MultiUserTelegramBot:
 *Direction:* {signal['signal']}
 *Confidence:* {signal['confidence']}%
 
-[DATA] *Entry Details:*
+ *Entry Details:*
 Entry Price: `${signal['entry_price']:.2f}`
 Stop Loss: `${signal['stop_loss']:.2f}`
 Risk: `{signal['pips_risk']:.1f} pips`
 
-🎯 *Take Profit Levels:*
+ *Take Profit Levels:*
 TP1 (45%): `${signal['take_profit_1']:.2f}` _{signal['pips_tp1']:.1f} pips_
 TP2 (30%): `${signal['take_profit_2']:.2f}` _{signal['pips_tp2']:.1f} pips_
 TP3 (25%): `${signal['take_profit_3']:.2f}` _{signal['pips_tp3']:.1f} pips_
 
-⚙️ *Risk Management:*
+ *Risk Management:*
 Position Size: `{signal['lot_size']} lots`
 Risk Amount: `${signal['risk_dollars']:.2f}`
 Expected Reward: `${signal['expected_reward']:.2f}`
 Risk/Reward: `1:{signal['rr_ratio']:.2f}`
 
-📍 *Trade Setup:*
+ *Trade Setup:*
 Regime: {signal.get('regime', 'N/A')}
 Level: {signal.get('level_name', 'N/A')}
 Session: {signal.get('session', 'N/A')}
 
-⏰ Time: `{signal.get('timestamp', 'N/A')}`
+ Time: `{signal.get('timestamp', 'N/A')}`
 
 ---
-💡 *Instructions:*
+ *Instructions:*
 1. Enter at market or use limit order
 2. Set stop loss immediately
 3. Move SL to breakeven after TP1 hits
@@ -149,23 +149,23 @@ class InteractiveTelegramBot:
         self.multi_user.add_subscriber(chat_id, username)
         
         welcome_message = f"""
-👋 *Welcome to Nixie's Gold Bot!*
+ *Welcome to Nixie's Gold Bot!*
 
 You've been subscribed to trading signals!
 
-[DATA] *What you'll receive:*
+ *What you'll receive:*
 • High-probability gold trading signals
 • Entry price and stop loss
 • Multiple take profit targets
 • Risk management details
 
-⚙️ *Commands:*
+ *Commands:*
 /start - Subscribe to signals
 /stop - Unsubscribe from signals
 /status - Check your subscription status
 /stats - Bot statistics
 
-🎯 *Strategy:*
+ *Strategy:*
 We trade gold using a 6-factor confluence system:
 1. Market regime
 2. Trading session timing
@@ -174,7 +174,7 @@ We trade gold using a 6-factor confluence system:
 5. Momentum confirmation
 6. Risk/reward validation
 
-📈 *Expected:*
+ *Expected:*
 • 0-3 signals per week (very selective!)
 • 65-75% win rate target
 • Minimum 1:1.5 risk/reward ratio
@@ -191,7 +191,7 @@ _Developed by Blessing Omoregie (@nixiestone)_
         removed = self.multi_user.remove_subscriber(chat_id)
         
         if removed:
-            message = "👋 You've been unsubscribed. Use /start to subscribe again."
+            message = " You've been unsubscribed. Use /start to subscribe again."
         else:
             message = "You weren't subscribed. Use /start to subscribe."
         
@@ -220,19 +220,19 @@ Chat ID: `{chat_id}`
         total_subscribers = self.multi_user.get_subscriber_count()
         
         message = f"""
-[DATA] *Bot Statistics:*
+ *Bot Statistics:*
 
 Total Subscribers: {total_subscribers}
 Strategy: 6-Factor Confluence
 Symbol: XAUUSDm (Gold)
 Risk per Trade: {config.RISK_PERCENT}%
 
-🎯 *Performance Targets:*
+ *Performance Targets:*
 Win Rate: 65-75%
 Min R:R: 1:{config.MIN_RISK_REWARD}
 Signals/Week: 1-3
 
-💡 This bot is very selective - quality over quantity!
+ This bot is very selective - quality over quantity!
         """
         
         await update.message.reply_text(message, parse_mode='Markdown')
@@ -247,8 +247,8 @@ Signals/Week: 1-3
         self.app.add_handler(CommandHandler("status", self.status_command))
         self.app.add_handler(CommandHandler("stats", self.stats_command))
         
-        print("[BOT] Interactive Telegram bot started!")
-        print("[TELEGRAM] Users can now use /start to subscribe")
+        print(" Interactive Telegram bot started!")
+        print("Users can now use /start to subscribe")
         print("Press Ctrl+C to stop")
         
         # Start the bot using run_polling (blocking)
@@ -276,19 +276,19 @@ if __name__ == "__main__":
     
     if len(sys.argv) > 1 and sys.argv[1] == 'interactive':
         # Run interactive bot for users to subscribe
-        print("\n🔄 Starting interactive mode...")
+        print("\n Starting interactive mode...")
         print("Users can message your bot to subscribe!\n")
         
         bot = InteractiveTelegramBot()
         bot.run_interactive()  # No asyncio.run needed
     else:
         # Test broadcast
-        print("\n[DATA] Current Subscribers:")
+        print("\n Current Subscribers:")
         bot = MultiUserTelegramBot()
         print(f"Total: {bot.get_subscriber_count()}")
         print(f"Chat IDs: {bot.subscribers}")
         
-        print("\n💡 To allow users to subscribe:")
+        print("\n To allow users to subscribe:")
         print("   python execution/telegram_multi_user.py interactive")
-        print("\n💡 To add users manually:")
+        print("\n To add users manually:")
         print("   Edit subscribers.json and add their chat IDs")

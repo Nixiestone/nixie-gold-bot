@@ -21,11 +21,11 @@ class LiveTrader:
         try:
             symbol_info = mt5.symbol_info(self.symbol)
             if symbol_info is None:
-                print(f"[ERROR] Symbol {self.symbol} not found")
+                print(f" Symbol {self.symbol} not found")
                 return False
             
             if not symbol_info.trade_mode == mt5.SYMBOL_TRADE_MODE_FULL:
-                print(f"[ERROR] Trading not allowed for {self.symbol}")
+                print(f" Trading not allowed for {self.symbol}")
                 return False
             
             lot_size = signal['lot_size']
@@ -59,15 +59,15 @@ class LiveTrader:
             result = mt5.order_send(request)
             
             if result is None:
-                print(f"[ERROR] Order send failed: {mt5.last_error()}")
+                print(f" Order send failed: {mt5.last_error()}")
                 return False
             
             if result.retcode != mt5.TRADE_RETCODE_DONE:
-                print(f"[ERROR] Order failed: {result.retcode}")
+                print(f"   Order failed: {result.retcode}")
                 print(f"   Comment: {result.comment}")
                 return False
             
-            print(f"[SUCCESS] Order executed successfully!")
+            print(f"   Order executed successfully!")
             print(f"   Ticket: {result.order}")
             print(f"   Volume: {result.volume}")
             print(f"   Price: {result.price}")
@@ -75,7 +75,7 @@ class LiveTrader:
             return True
             
         except Exception as e:
-            print(f"[ERROR] Error executing trade: {e}")
+            print(f" Error executing trade: {e}")
             return False
     
     def close_position(self, position_id):
@@ -83,7 +83,7 @@ class LiveTrader:
         try:
             position = mt5.positions_get(ticket=position_id)
             if not position:
-                print(f"[ERROR] Position {position_id} not found")
+                print(f" Position {position_id} not found")
                 return False
             
             position = position[0]
@@ -112,14 +112,14 @@ class LiveTrader:
             result = mt5.order_send(request)
             
             if result and result.retcode == mt5.TRADE_RETCODE_DONE:
-                print(f"[SUCCESS] Position closed: {position_id}")
+                print(f" Position closed: {position_id}")
                 return True
             else:
-                print(f"[ERROR] Failed to close position: {result.comment if result else 'Unknown error'}")
+                print(f" Failed to close position: {result.comment if result else 'Unknown error'}")
                 return False
                 
         except Exception as e:
-            print(f"[ERROR] Error closing position: {e}")
+            print(f" Error closing position: {e}")
             return False
     
     def get_open_positions(self):
@@ -133,7 +133,7 @@ class LiveTrader:
             return bot_positions
             
         except Exception as e:
-            print(f"[ERROR] Error getting positions: {e}")
+            print(f"[ Error getting positions: {e}")
             return []
     
     def check_position_status(self, position_id):
@@ -160,7 +160,7 @@ class LiveTrader:
             }
             
         except Exception as e:
-            print(f"[ERROR] Error checking position: {e}")
+            print(f" Error checking position: {e}")
             return None
     
     def modify_stop_loss(self, position_id, new_sl):
@@ -183,19 +183,19 @@ class LiveTrader:
             result = mt5.order_send(request)
             
             if result and result.retcode == mt5.TRADE_RETCODE_DONE:
-                print(f"[SUCCESS] Stop loss modified to ${new_sl:.2f}")
+                print(f" Stop loss modified to ${new_sl:.2f}")
                 return True
             else:
-                print(f"[ERROR] Failed to modify SL")
+                print(f" Failed to modify SL")
                 return False
                 
         except Exception as e:
-            print(f"[ERROR] Error modifying SL: {e}")
+            print(f" Error modifying SL: {e}")
             return False
 
 
 if __name__ == "__main__":
-    print("[WARN]  WARNING: This module executes REAL trades!")
+    print("  WARNING: This module executes REAL trades!")
     print("   Only use on a demo account for testing!")
     print()
     

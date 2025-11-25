@@ -38,22 +38,22 @@ class SignalGenerator:
             # Step 1: Check if we should trade now
             should_trade, reason = self.market_hours.should_trade_now(timestamp)
             if not should_trade:
-                print(f"[PAUSE]  {reason}")
+                print(f"  {reason}")
                 return None
             
             # Step 2: Check regime
             regime, adx = self.regime_detector.detect_regime(df_h4)
             if not self.regime_detector.is_favorable_regime(regime):
-                print(f"[PAUSE]  Unfavorable regime: {regime}")
+                print(f"  Unfavorable regime: {regime}")
                 return None
             
-            print(f"[SUCCESS] Trading session active: {self.market_hours.get_current_session()}")
-            print(f"[SUCCESS] Regime: {self.regime_detector.get_regime_description(regime)}")
+            print(f" Trading session active: {self.market_hours.get_current_session()}")
+            print(f" Regime: {self.regime_detector.get_regime_description(regime)}")
             
             # Step 3: Identify structural levels
             levels = self.structural.identify_key_levels(df_h4)
             if not levels:
-                print("[WARN]  No structural levels identified")
+                print("  No structural levels identified")
                 return None
             
             # Step 4: Check for level interaction
@@ -61,18 +61,18 @@ class SignalGenerator:
             nearest_level, level_name, distance = self.structural.find_nearest_level(current_price, levels)
             
             if not nearest_level:
-                print(f"[PAUSE]  No nearby levels (Current: ${current_price:.2f})")
+                print(f"  No nearby levels (Current: ${current_price:.2f})")
                 return None
             
-            print(f"🎯 Near level: {level_name} at ${nearest_level:.2f} ({distance:.1f} pips away)")
+            print(f" Near level: {level_name} at ${nearest_level:.2f} ({distance:.1f} pips away)")
             
             # Step 5: Check for liquidity sweep
             sweep = self.structural.check_liquidity_sweep(df_m15, nearest_level)
             if not sweep['detected']:
-                print(f"[PAUSE]  No liquidity sweep detected at {level_name}")
+                print(f"  No liquidity sweep detected at {level_name}")
                 return None
             
-            print(f"💥 Liquidity sweep detected! Direction: {sweep['direction']}")
+            print(f" Liquidity sweep detected! Direction: {sweep['direction']}")
             
             # Step 6: Check momentum conditions
             signal = None
@@ -92,12 +92,12 @@ class SignalGenerator:
                 signal['level_name'] = level_name
                 signal['session'] = self.market_hours.get_current_session()
                 
-                print(f"[SIGNAL] SIGNAL GENERATED: {signal['signal']}")
+                print(f" SIGNAL GENERATED: {signal['signal']}")
             
             return signal
             
         except Exception as e:
-            print(f"[ERROR] Error generating signal: {e}")
+            print(f" Error generating signal: {e}")
             import traceback
             traceback.print_exc()
             return None
@@ -123,7 +123,7 @@ class SignalGenerator:
             close_above = current_price > level
             
             if not (rsi_ok and stoch_ok and close_above):
-                print(f"[PAUSE]  LONG conditions not met:")
+                print(f"   LONG conditions not met:")
                 print(f"   RSI oversold or divergence: {rsi_ok}")
                 print(f"   Stochastic crossover: {stoch_ok}")
                 print(f"   Closed above level: {close_above}")
@@ -133,7 +133,7 @@ class SignalGenerator:
             return self._build_signal('LONG', current_price, level, df, regime)
             
         except Exception as e:
-            print(f"[ERROR] Error checking LONG conditions: {e}")
+            print(f" Error checking LONG conditions: {e}")
             return None
     
     def _check_short_conditions(self, df, current_price, level, regime):
@@ -147,7 +147,7 @@ class SignalGenerator:
             # Check RSI divergence
             rsi_div = self.technical.check_rsi_divergence(df)
             
-            print(f"[DATA] SHORT Check - RSI: {rsi:.1f}, Stoch K: {stoch_k:.1f}, D: {stoch_d:.1f}")
+            print(f" SHORT Check - RSI: {rsi:.1f}, Stoch K: {stoch_k:.1f}, D: {stoch_d:.1f}")
             
             # Conditions for SHORT
             rsi_ok = rsi > config.RSI_OVERBOUGHT or rsi_div == 'bearish'
@@ -157,7 +157,7 @@ class SignalGenerator:
             close_below = current_price < level
             
             if not (rsi_ok and stoch_ok and close_below):
-                print(f"[PAUSE]  SHORT conditions not met:")
+                print(f"   SHORT conditions not met:")
                 print(f"   RSI overbought or divergence: {rsi_ok}")
                 print(f"   Stochastic crossover: {stoch_ok}")
                 print(f"   Closed below level: {close_below}")
@@ -167,7 +167,7 @@ class SignalGenerator:
             return self._build_signal('SHORT', current_price, level, df, regime)
             
         except Exception as e:
-            print(f"[ERROR] Error checking SHORT conditions: {e}")
+            print(f" Error checking SHORT conditions: {e}")
             return None
     
     def _build_signal(self, direction, entry_price, level, df, regime):
@@ -206,9 +206,9 @@ class SignalGenerator:
                 account_info = mt5.account_info()
                 if account_info:
                     account_balance = account_info.balance
-                    print(f"💰 Using live account balance: ${account_balance:.2f}")
+                    print(f" Using live account balance: ${account_balance:.2f}")
             except:
-                print(f"[WARN]  Using config balance: ${account_balance:.2f}")
+                print(f"  Using config balance: ${account_balance:.2f}")
             
             # Calculate position size
             lot_size = self.risk_manager.calculate_position_size(
@@ -218,7 +218,7 @@ class SignalGenerator:
             )
             
             if lot_size == 0:
-                print(f"[WARN]  Position size calculation failed")
+                print(f"  Position size calculation failed")
                 return None
             
             # Calculate all metrics
@@ -251,7 +251,7 @@ class SignalGenerator:
             return signal
             
         except Exception as e:
-            print(f"[ERROR] Error building signal: {e}")
+            print(f" Error building signal: {e}")
             return None
     
     def _calculate_confidence(self, df, regime, pip_risk):
@@ -297,7 +297,7 @@ class SignalGenerator:
 if __name__ == "__main__":
     from data.data_handler import DataHandler
     
-    print("[BOT] Testing Nixie's Signal Generator...")
+    print(" Testing Nixie's Signal Generator...")
     print("=" * 50)
     
     handler = DataHandler()
@@ -318,12 +318,12 @@ if __name__ == "__main__":
             
             if signal:
                 print("\n" + "=" * 50)
-                print("🎯 TRADING SIGNAL GENERATED!")
+                print(" TRADING SIGNAL GENERATED!")
                 print("=" * 50)
                 for key, value in signal.items():
                     print(f"{key}: {value}")
             else:
-                print("\n[PAUSE]  No trading signal at this time")
+                print("\n  No trading signal at this time")
         
         handler.disconnect_mt5()
     else:

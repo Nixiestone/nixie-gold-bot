@@ -89,15 +89,15 @@ class NixieGoldBot:
                 self.ml_filter.load_model()
             
             # Send startup message to Telegram
-            print(Fore.YELLOW + "[TELEGRAM] Sending startup notification...")
+            print(Fore.YELLOW + " Sending startup notification...")
             import asyncio
             asyncio.run(self.telegram.send_startup_message())
             
-            print(Fore.GREEN + "[SUCCESS] Bot initialized successfully!")
+            print(Fore.GREEN + " Bot initialized successfully!")
             return True
             
         except Exception as e:
-            print(Fore.RED + f"[FAIL] Initialization error: {e}")
+            print(Fore.RED + f" Initialization error: {e}")
             logging.error(f"Initialization error: {e}")
             return False
     
@@ -106,7 +106,7 @@ class NixieGoldBot:
         try:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             print(Fore.CYAN + f"\n{'=' * 60}")
-            print(Fore.CYAN + f"[SCAN] Scanning for signals at {timestamp}")
+            print(Fore.CYAN + f" Scanning for signals at {timestamp}")
             print(Fore.CYAN + f"{'=' * 60}")
             
             # Check if we should trade now
@@ -116,21 +116,21 @@ class NixieGoldBot:
                 return
             
             # Fetch market data
-            print(Fore.YELLOW + "[DATA] Fetching market data...")
+            print(Fore.YELLOW + " Fetching market data...")
             df_h4 = self.handler.get_gold_data('H4', 200)
             df_m15 = self.handler.get_gold_data('M15', 500)
             
             if df_h4 is None or df_m15 is None:
-                print(Fore.RED + "[FAIL] Failed to fetch market data")
+                print(Fore.RED + " Failed to fetch market data")
                 return
             
             # Calculate indicators
-            print(Fore.YELLOW + "[CALC] Calculating technical indicators...")
+            print(Fore.YELLOW + " Calculating technical indicators...")
             df_h4 = self.technical.calculate_all(df_h4)
             df_m15 = self.technical.calculate_all(df_m15)
             
             # Generate signal
-            print(Fore.YELLOW + "[ANALYZE] Analyzing market conditions...")
+            print(Fore.YELLOW + " Analyzing market conditions...")
             signal = self.signal_generator.generate_signal(df_h4, df_m15)
             
             if signal:
@@ -151,7 +151,7 @@ class NixieGoldBot:
                 # Signal approved! Send to Telegram
                 self._process_signal(signal, df_h4, df_m15)
             else:
-                print(Fore.BLUE + "⏸️  No trading signal at this time")
+                print(Fore.BLUE + "  No trading signal at this time")
                 print(Fore.BLUE + "   Waiting for next scan...")
             
         except Exception as e:
@@ -190,26 +190,26 @@ class NixieGoldBot:
             
             # Send to Telegram
             if not config.DRY_RUN:
-                print(Fore.YELLOW + "\n[TELEGRAM] Sending signal to Telegram...")
+                print(Fore.YELLOW + "\n Sending signal to Telegram...")
                 import asyncio
                 
                 # Send to all subscribers
                 success = asyncio.run(self.multi_user_telegram.send_signal(signal))
                 
                 if success:
-                    print(Fore.GREEN + f"[SUCCESS] Signal sent to {success} subscriber(s)!")
+                    print(Fore.GREEN + f" Signal sent to {success} subscriber(s)!")
                     self.signals_today += 1
                     self.last_signal_time = datetime.now()
                     
                     # Auto-execute trade if enabled
                     if self.auto_trade_enabled:
-                        print(Fore.YELLOW + "\n[BOT] Auto-trading enabled. Executing trade...")
+                        print(Fore.YELLOW + "\n Auto-trading enabled. Executing trade...")
                         if self.live_trader.execute_trade(signal):
-                            print(Fore.GREEN + "[SUCCESS] Trade executed successfully!")
+                            print(Fore.GREEN + " Trade executed successfully!")
                         else:
-                            print(Fore.RED + "[FAIL] Trade execution failed")
+                            print(Fore.RED + " Trade execution failed")
                 else:
-                    print(Fore.RED + "[FAIL] Failed to send signal")
+                    print(Fore.RED + " Failed to send signal")
             else:
                 print(Fore.YELLOW + "\n[WARN]  DRY RUN MODE - Signal not sent to Telegram")
                 print(Fore.YELLOW + "   Set ENVIRONMENT=production in .env to enable live signals")
@@ -218,7 +218,7 @@ class NixieGoldBot:
             logging.info(f"Signal generated: {signal['signal']} at {signal['entry_price']}")
             
         except Exception as e:
-            print(Fore.RED + f"[FAIL] Error processing signal: {e}")
+            print(Fore.RED + f" Error processing signal: {e}")
             logging.error(f"Error processing signal: {e}")
     
     def run(self):
@@ -226,7 +226,7 @@ class NixieGoldBot:
         try:
             # Initialize
             if not self.initialize():
-                print(Fore.RED + "[FAIL] Failed to initialize bot. Exiting.")
+                print(Fore.RED + " Failed to initialize bot. Exiting.")
                 return
             
             self.running = True
@@ -234,11 +234,11 @@ class NixieGoldBot:
             # Schedule scanning
             schedule.every(config.SCAN_INTERVAL_MINUTES).minutes.do(self.scan_for_signals)
             
-            print(Fore.GREEN + f"\n[SUCCESS] Bot is now running!")
-            print(Fore.CYAN + f"[DATA] Scanning every {config.SCAN_INTERVAL_MINUTES} minutes")
-            print(Fore.CYAN + f"💰 Risk per trade: {config.RISK_PERCENT}%")
-            print(Fore.CYAN + f"🎯 Symbol: {config.SYMBOL}")
-            print(Fore.CYAN + f"[BOT] ML Filter: {'Enabled' if config.USE_ML_FILTER else 'Disabled'}")
+            print(Fore.GREEN + f"\n Bot is now running!")
+            print(Fore.CYAN + f" Scanning every {config.SCAN_INTERVAL_MINUTES} minutes")
+            print(Fore.CYAN + f" Risk per trade: {config.RISK_PERCENT}%")
+            print(Fore.CYAN + f" Symbol: {config.SYMBOL}")
+            print(Fore.CYAN + f" ML Filter: {'Enabled' if config.USE_ML_FILTER else 'Disabled'}")
             
             if config.DRY_RUN:
                 print(Fore.YELLOW + "\n[WARN]  Running in DRY RUN mode (no signals sent)")
@@ -256,7 +256,7 @@ class NixieGoldBot:
                 time.sleep(60)  # Check every minute
             
         except KeyboardInterrupt:
-            print(Fore.YELLOW + "\n\n⏸️  Bot stopped by user")
+            print(Fore.YELLOW + "\n\n  Bot stopped by user")
             self.shutdown()
         except Exception as e:
             print(Fore.RED + f"\n[FAIL] Fatal error: {e}")

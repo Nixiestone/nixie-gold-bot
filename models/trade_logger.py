@@ -67,7 +67,7 @@ class TradeLogger:
                 print(f"[SUCCESS] Trade outcome updated: {outcome} (${pnl:.2f})")
                 return True
         
-        print(f"[WARN]  Trade not found: {timestamp}")
+        print(f"  Trade not found: {timestamp}")
         return False
     
     def save_history(self):
@@ -77,7 +77,7 @@ class TradeLogger:
             with open(self.log_file, 'w') as f:
                 json.dump(self.trades, f, indent=2)
         except Exception as e:
-            print(f"[ERROR] Error saving history: {e}")
+            print(f" Error saving history: {e}")
     
     def get_completed_trades(self):
         """Get all trades with outcomes"""
@@ -103,7 +103,7 @@ class TradeLogger:
             features.append(trade['features'])
             labels.append(1 if trade['outcome'] == 'win' else 0)
         
-        print(f"[DATA] Prepared {len(features)} trades for training")
+        print(f"   Prepared {len(features)} trades for training")
         print(f"   Wins: {sum(labels)}, Losses: {len(labels) - sum(labels)}")
         
         import numpy as np
@@ -140,11 +140,11 @@ class TradeLogger:
         stats = self.get_statistics()
         
         if not stats:
-            print("[DATA] No completed trades yet")
+            print(" No completed trades yet")
             return
         
         print("\n" + "=" * 50)
-        print("[DATA] TRADING STATISTICS")
+        print(" TRADING STATISTICS")
         print("=" * 50)
         print(f"Total Trades:    {stats['total_trades']}")
         print(f"Wins:            {stats['wins']}")
@@ -162,7 +162,7 @@ if __name__ == "__main__":
     logger.print_statistics()
     
     print(f"\n Total logged trades: {len(logger.trades)}")
-    print(f"[SUCCESS] Completed trades: {len(logger.get_completed_trades())}")
+    print(f" Completed trades: {len(logger.get_completed_trades())}")
     
     X, y = logger.get_training_data()
     if X is not None:

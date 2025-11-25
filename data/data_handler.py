@@ -33,7 +33,7 @@ class DataHandler:
                 return False
             
             self.connected = True
-            print("✅ Connected to MetaTrader 5 successfully!")
+            print(" Connected to MetaTrader 5 successfully!")
             
             account_info = mt5.account_info()
             if account_info:
@@ -179,7 +179,7 @@ if __name__ == "__main__":
         
         bid, ask = handler.get_current_price()
         if bid and ask:
-            print(f"\n💰 Current Price: Bid={bid:.2f}, Ask={ask:.2f}")
+            print(f"\n Current Price: Bid={bid:.2f}, Ask={ask:.2f}")
         
         handler.disconnect_mt5()
     else:

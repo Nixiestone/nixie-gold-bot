@@ -51,7 +51,7 @@ def print_banner():
 ║   {Fore.CYAN}██║ ╚████║██║██╔╝ ██╗██║███████╗ ███████║            {Fore.YELLOW}║
 ║   {Fore.CYAN}╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝╚══════╝ ╚══════╝            {Fore.YELLOW}║
 ║                                                          ║
-║              {Fore.GREEN}🤖 GOLD TRADING BOT - INTRADAY{Fore.YELLOW}              ║
+║              {Fore.GREEN} GOLD TRADING BOT - INTRADAY{Fore.YELLOW}              ║
 ║                                                          ║
 ╚══════════════════════════════════════════════════════════╝{Style.RESET_ALL}
 """

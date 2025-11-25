@@ -47,31 +47,31 @@ class TelegramNotifier:
 *Direction:* {signal['signal']}
 *Confidence:* {signal['confidence']}%
 
-[DATA] *Entry Details:*
+ *Entry Details:*
 Entry Price: `${signal['entry_price']:.2f}`
 Stop Loss: `${signal['stop_loss']:.2f}`
 Risk: `{signal['pips_risk']:.1f} pips`
 
-🎯 *Take Profit Levels:*
+ *Take Profit Levels:*
 TP1 (45%): `${signal['take_profit_1']:.2f}` _{signal['pips_tp1']:.1f} pips_
 TP2 (30%): `${signal['take_profit_2']:.2f}` _{signal['pips_tp2']:.1f} pips_
 TP3 (25%): `${signal['take_profit_3']:.2f}` _{signal['pips_tp3']:.1f} pips_
 
-⚙️ *Risk Management:*
+ *Risk Management:*
 Position Size: `{signal['lot_size']} lots`
 Risk Amount: `${signal['risk_dollars']:.2f}`
 Expected Reward: `${signal['expected_reward']:.2f}`
 Risk/Reward: `1:{signal['rr_ratio']:.2f}`
 
-📍 *Trade Setup:*
+ *Trade Setup:*
 Regime: {signal.get('regime', 'N/A')}
 Level: {signal.get('level_name', 'N/A')}
 Session: {signal.get('session', 'N/A')}
 
-⏰ Time: `{signal.get('timestamp', 'N/A')}`
+ Time: `{signal.get('timestamp', 'N/A')}`
 
 ---
-💡 *Instructions:*
+ *Instructions:*
 1. Enter at market or use limit order
 2. Set stop loss immediately
 3. Move SL to breakeven after TP1 hits
@@ -98,17 +98,17 @@ _Nixie's Quant Project by Blessing Omoregie_
     async def send_startup_message(self):
         """Send message when bot starts"""
         message = """
-[BOT] *Nixie's Gold Bot Started!*
+ *Nixie's Gold Bot Started!*
 
 The bot is now monitoring gold markets and will send signals when high-probability setups are detected.
 
-⚙️ *Configuration:*
+ *Configuration:*
 • Symbol: XAUUSDm
 • Risk per trade: {risk}%
 • Scan interval: {interval} minutes
 
-🎯 *Target Win Rate:* 65-75%
-[DATA] *Min Risk/Reward:* 1:{min_rr}
+ *Target Win Rate:* 65-75%
+ *Min Risk/Reward:* 1:{min_rr}
 
 Bot is active and scanning! 
         """.format(
@@ -150,7 +150,7 @@ def send_text_sync(text):
 
 
 if __name__ == "__main__":
-    print("🧪 Testing Telegram Bot...")
+    print(" Testing Telegram Bot...")
     
 
     test_signal = {
