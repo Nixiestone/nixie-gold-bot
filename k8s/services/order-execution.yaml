@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-execution
+  namespace: trading
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-execution
+  template:
+    metadata:
+      labels:
+        app: order-execution
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8002"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: order-execution
+          image: ghcr.io/nixiestone/nixie-gold-bot/order-execution:latest
+          ports:
+            - containerPort: 8002  # Prometheus metrics
+            - containerPort: 8080  # Health
+          envFrom:
+            - configMapRef:
+                name: trading-config
+            - secretRef:
+                name: trading-secrets
+          env:
+            - name: METRICS_PORT
+              value: "8002"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-execution
+  namespace: trading
+spec:
+  selector:
+    app: order-execution
+  ports:
+    - name: metrics
+      port: 8002
+      targetPort: 8002

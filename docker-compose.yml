@@ -1,0 +1,121 @@
+version: "3.9"
+
+# Local development stack — mirrors the k8s deployment.
+# Usage:
+#   cp .env.example .env       # fill in your API keys
+#   docker compose up --build
+
+services:
+  redpanda:
+    image: redpandadata/redpanda:v23.3.18
+    command:
+      - redpanda
+      - start
+      - --smp=1
+      - --memory=256M
+      - --reserve-memory=0M
+      - --overprovisioned
+      - --node-id=0
+      - --kafka-addr=PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr=PLAINTEXT://redpanda:9092
+      - --mode=dev-container
+    ports:
+      - "9092:9092"
+      - "9644:9644"  # Prometheus metrics
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "health"]
+      interval: 10s
+      retries: 10
+      start_period: 20s
+
+  create-topics:
+    image: redpandadata/redpanda:v23.3.18
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    command:
+      - /bin/sh
+      - -c
+      - |
+        rpk topic create raw.ticks --brokers redpanda:9092 --topic-config retention.ms=3600000
+        rpk topic create processed.signals --brokers redpanda:9092 --topic-config retention.ms=3600000
+        rpk topic create executed.orders --brokers redpanda:9092 --topic-config retention.ms=86400000
+        echo "Topics created"
+    restart: "no"
+
+  tick-ingestion:
+    build:
+      context: .
+      dockerfile: services/tick-ingestion/Dockerfile
+    depends_on:
+      create-topics:
+        condition: service_completed_successfully
+    environment:
+      KAFKA_BROKER: redpanda:9092
+      ALPHA_VANTAGE_KEY: ${ALPHA_VANTAGE_KEY}
+      POLL_INTERVAL_SECONDS: ${POLL_INTERVAL_SECONDS:-3480}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "8000:8000"  # Prometheus metrics
+      - "8080:8080"  # Health
+    restart: unless-stopped
+
+  signal-processor:
+    build:
+      context: .
+      dockerfile: services/signal-processor/Dockerfile
+    depends_on:
+      create-topics:
+        condition: service_completed_successfully
+    environment:
+      KAFKA_BROKER: redpanda:9092
+      MIN_H4_BARS: "60"
+      MIN_M15_BARS: "100"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "8001:8001"  # Prometheus metrics
+      - "8081:8080"  # Health (mapped to 8081 to avoid conflict)
+    restart: unless-stopped
+
+  order-execution:
+    build:
+      context: .
+      dockerfile: services/order-execution/Dockerfile
+    depends_on:
+      create-topics:
+        condition: service_completed_successfully
+    environment:
+      KAFKA_BROKER: redpanda:9092
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+      NEON_DATABASE_URL: ${NEON_DATABASE_URL:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "8002:8002"  # Prometheus metrics
+      - "8082:8080"  # Health
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    volumes:
+      - ./k8s/monitoring/prometheus-local.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=24h
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.1.0
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: trading2024
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    restart: unless-stopped
+
+volumes:
+  grafana-storage:

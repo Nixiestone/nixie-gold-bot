@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trading-dashboard
+  namespace: monitoring
+data:
+  trading-dashboard.json: |
+    {
+      "title": "Nixie Gold Bot — Trading Dashboard",
+      "uid": "nixie-trading-v1",
+      "schemaVersion": 38,
+      "version": 1,
+      "refresh": "30s",
+      "time": { "from": "now-6h", "to": "now" },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Tick Ingestion Rate (ticks/min)",
+          "type": "stat",
+          "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+          "targets": [{ "expr": "rate(tick_ingestion_ticks_total[1m]) * 60", "legendFormat": "ticks/min" }],
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+        },
+        {
+          "id": 2,
+          "title": "Signal Latency p50/p95 (ms)",
+          "type": "stat",
+          "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            { "expr": "histogram_quantile(0.50, rate(signal_processor_latency_ms_bucket[5m]))", "legendFormat": "p50" },
+            { "expr": "histogram_quantile(0.95, rate(signal_processor_latency_ms_bucket[5m]))", "legendFormat": "p95" }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Signals Generated / hour",
+          "type": "stat",
+          "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+          "targets": [{ "expr": "increase(signal_processor_signals_total[1h])", "legendFormat": "signals/hr" }]
+        },
+        {
+          "id": 4,
+          "title": "Telegram Success Rate",
+          "type": "gauge",
+          "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+          "targets": [{ "expr": "order_execution_telegram_success_rate * 100", "legendFormat": "%" }],
+          "fieldConfig": {
+            "defaults": {
+              "min": 0, "max": 100,
+              "thresholds": { "steps": [{"value":0,"color":"red"},{"value":80,"color":"yellow"},{"value":95,"color":"green"}] }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "title": "Tick Rate Over Time",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+          "targets": [{ "expr": "rate(tick_ingestion_ticks_total[1m]) * 60", "legendFormat": "ticks/min" }]
+        },
+        {
+          "id": 6,
+          "title": "Signal Latency Over Time",
+          "type": "timeseries",
+          "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+          "targets": [
+            { "expr": "histogram_quantile(0.50, rate(signal_processor_latency_ms_bucket[5m]))", "legendFormat": "p50 ms" },
+            { "expr": "histogram_quantile(0.95, rate(signal_processor_latency_ms_bucket[5m]))", "legendFormat": "p95 ms" }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "API Calls / Errors",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 12, "w": 8, "h": 6 },
+          "targets": [
+            { "expr": "increase(tick_ingestion_api_calls_total[1d])", "legendFormat": "calls/day" },
+            { "expr": "increase(tick_ingestion_api_errors_total[1d])", "legendFormat": "errors/day" }
+          ]
+        },
+        {
+          "id": 8,
+          "title": "Orders Processed",
+          "type": "timeseries",
+          "gridPos": { "x": 8, "y": 12, "w": 8, "h": 6 },
+          "targets": [
+            { "expr": "increase(order_execution_orders_total[1h])", "legendFormat": "orders/hr" },
+            { "expr": "increase(order_execution_telegram_sent_total[1h])", "legendFormat": "telegram/hr" }
+          ]
+        },
+        {
+          "id": 9,
+          "title": "Tick Buffer Size",
+          "type": "timeseries",
+          "gridPos": { "x": 16, "y": 12, "w": 8, "h": 6 },
+          "targets": [{ "expr": "signal_processor_tick_buffer_size", "legendFormat": "buffered ticks" }]
+        }
+      ]
+    }

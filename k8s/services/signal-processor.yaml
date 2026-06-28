@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: signal-processor
+  namespace: trading
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: signal-processor
+  template:
+    metadata:
+      labels:
+        app: signal-processor
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: signal-processor
+          image: ghcr.io/nixiestone/nixie-gold-bot/signal-processor:latest
+          ports:
+            - containerPort: 8001  # Prometheus metrics
+            - containerPort: 8080  # Health
+          envFrom:
+            - configMapRef:
+                name: trading-config
+            - secretRef:
+                name: trading-secrets
+          env:
+            - name: METRICS_PORT
+              value: "8001"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: signal-processor
+  namespace: trading
+spec:
+  selector:
+    app: signal-processor
+  ports:
+    - name: metrics
+      port: 8001
+      targetPort: 8001
