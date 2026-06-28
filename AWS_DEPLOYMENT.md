@@ -1,4 +1,4 @@
-# 🚀 AWS Free Tier Deployment Guide
+# AWS Free Tier Deployment Guide
 
 ## Deploy Nixie's Gold Bot to Run 24/7 for FREE (First 12 Months)
 
@@ -6,7 +6,7 @@ This guide will walk you through deploying your trading bot on Amazon Web Servic
 
 ---
 
-## 📋 What You Get with AWS Free Tier
+## What You Get with AWS Free Tier
 
 - **750 hours/month** of server time (enough for 24/7 operation)
 - **1 vCPU + 1 GB RAM** Windows Server
@@ -16,21 +16,21 @@ This guide will walk you through deploying your trading bot on Amazon Web Servic
 
 ---
 
-## 🎯 Overview - What We're Going to Do
+## Overview - What We're Going to Do
 
-1. ✅ Create AWS account
-2. ✅ Launch Windows server in the cloud
-3. ✅ Connect to the server
-4. ✅ Install Python and MT5
-5. ✅ Upload and configure the bot
-6. ✅ Set up automatic restarts
-7. ✅ Monitor and maintain
+1. Create AWS account
+2. Launch Windows server in the cloud
+3. Connect to the server
+4. Install Python and MT5
+5. Upload and configure the bot
+6. Set up automatic restarts
+7. Monitor and maintain
 
 **Time needed:** 45-60 minutes for first-time setup
 
 ---
 
-## 📦 Part 1: Prepare Your Bot Locally
+## Part 1: Prepare Your Bot Locally
 
 Before deploying to AWS, let's prepare everything on your computer.
 
@@ -107,7 +107,7 @@ nixie-gold-bot-deploy/
 
 ---
 
-## 🏗️ Part 2: Create AWS Account & Launch Server
+## Part 2: Create AWS Account & Launch Server
 
 ### Step 2.1: Sign Up for AWS
 
@@ -131,14 +131,14 @@ nixie-gold-bot-deploy/
    - Choose **"Basic support - Free"**
 8. Complete!
 
-⏰ **Wait 5-10 minutes** for account activation email.
+ **Wait 5-10 minutes** for account activation email.
 
 ### Step 2.2: Launch Your Server
 
 1. **Log in** to AWS Console: https://console.aws.amazon.com
 
 2. **Search for EC2**:
-   - Top search bar → type "EC2"
+   - Top search bar -> type "EC2"
    - Click "EC2" (Virtual Servers in the Cloud)
 
 3. **Check Your Region** (top-right corner):
@@ -160,12 +160,12 @@ nixie-gold-bot-deploy/
    **Application and OS Images (AMI):**
    - Click: **Windows**
    - Select: **Microsoft Windows Server 2022 Base**
-   - Verify tag: **"Free tier eligible"** ✅
+   - Verify tag: **"Free tier eligible"**
    - Architecture: 64-bit (x86)
 
    **Instance Type:**
    - Select: **t2.micro**
-   - Shows: "Free tier eligible" ✅
+   - Shows: "Free tier eligible"
    - 1 vCPU, 1 GiB Memory
 
    **Key Pair (login):**
@@ -174,11 +174,11 @@ nixie-gold-bot-deploy/
    - Type: **RSA**
    - Format: **.pem** (or .ppk if using PuTTY)
    - Click: **"Create key pair"**
-   - **File downloads** → Save it somewhere safe!
-   - ⚠️ **CRITICAL:** Don't lose this file! You can't login without it!
+   - **File downloads** -> Save it somewhere safe!
+   - **CRITICAL:** Don't lose this file! You can't login without it!
 
    **Network Settings:**
-   - Check: ✅ **"Allow RDP traffic from"**
+   - Check: **"Allow RDP traffic from"**
    - Source: **"My IP"** (more secure) or **"Anywhere"** (easier)
    - Security Group Name: `nixie-bot-security`
 
@@ -190,20 +190,20 @@ nixie-gold-bot-deploy/
    - Leave everything as default
 
 6. **Review Summary** on the right:
-   - Free tier eligible: ✅
-   - Windows Server 2022: ✅
-   - t2.micro: ✅
+   - Free tier eligible:
+   - Windows Server 2022:
+   - t2.micro:
 
 7. **Click "Launch Instance"** (orange button)
 
 8. **Success!**
    - Click "View all instances"
    - You'll see your instance starting up
-   - ⏰ **Wait 3-5 minutes** for "Instance State" to show **"Running"**
+   - **Wait 3-5 minutes** for "Instance State" to show **"Running"**
 
 ---
 
-## 🔐 Part 3: Connect to Your Server
+## Part 3: Connect to Your Server
 
 ### Step 3.1: Get Your Password
 
@@ -228,7 +228,7 @@ nixie-gold-bot-deploy/
 
 **On Windows:**
 
-1. Search: **"Remote Desktop Connection"** (or press `Win + R` → type `mstsc`)
+1. Search: **"Remote Desktop Connection"** (or press `Win + R` -> type `mstsc`)
 
 2. Computer: **Paste the Public DNS**
 
@@ -240,9 +240,9 @@ nixie-gold-bot-deploy/
 
 6. Enter **Password** (the decrypted one)
 
-7. Certificate warning → Click **"Yes"**
+7. Certificate warning -> Click **"Yes"**
 
-8. **You're in!** 🎉
+8. **You're in!**
 
 **On Mac:**
 
@@ -262,7 +262,7 @@ nixie-gold-bot-deploy/
 
 1. Install Remmina: `sudo apt install remmina`
 
-2. Open Remmina → New Connection
+2. Open Remmina -> New Connection
 
 3. Protocol: **RDP**
 
@@ -276,7 +276,7 @@ nixie-gold-bot-deploy/
 
 ---
 
-## 🛠️ Part 4: Set Up the Server
+## Part 4: Set Up the Server
 
 **All these steps happen INSIDE the remote desktop window (on the cloud server)!**
 
@@ -285,7 +285,7 @@ nixie-gold-bot-deploy/
 (This lets you download files)
 
 1. **Server Manager** should open automatically
-   - If not: Click Start → Server Manager
+   - If not: Click Start -> Server Manager
 
 2. Click **"Local Server"** (left sidebar)
 
@@ -309,7 +309,7 @@ nixie-gold-bot-deploy/
 
 4. **Run the installer**
 
-5. ⚠️ **CRITICAL:** Check ✅ **"Add Python to PATH"**
+5. **CRITICAL:** Check **"Add Python to PATH"**
 
 6. Click **"Install Now"**
 
@@ -320,7 +320,7 @@ nixie-gold-bot-deploy/
 9. **Verify installation:**
    - Open Command Prompt (search "cmd")
    - Type: `python --version`
-   - Should show: `Python 3.11.9` ✅
+   - Should show: `Python 3.11.9`
 
 ### Step 4.3: Install MetaTrader 5
 
@@ -333,15 +333,15 @@ nixie-gold-bot-deploy/
 4. **Log in** with your trading account
 
 5. **Enable Algo Trading:**
-   - Tools → Options
+   - Tools -> Options
    - Expert Advisors tab
-   - Check ✅ **"Allow algorithmic trading"**
-   - Check ✅ **"Allow DLL imports"**
+   - Check **"Allow algorithmic trading"**
+   - Check **"Allow DLL imports"**
    - Click **"OK"**
 
 6. **Verify XAUUSDm symbol:**
-   - View → Market Watch (or Ctrl+M)
-   - Right-click → **"Show All"**
+   - View -> Market Watch (or Ctrl+M)
+   - Right-click -> **"Show All"**
    - Find your gold symbol (XAUUSDm)
    - Double-click to open a chart
 
@@ -353,7 +353,7 @@ nixie-gold-bot-deploy/
 
 1. In Edge, go to: `https://github.com/nixiestone/nixie-gold-bot`
 
-2. Click **"Code"** → **"Download ZIP"**
+2. Click **"Code"** -> **"Download ZIP"**
 
 3. Extract to Desktop
 
@@ -364,14 +364,14 @@ nixie-gold-bot-deploy/
 
 2. In **Remote Desktop window**:
    - Paste on the Desktop (Ctrl+V)
-   - Right-click → Extract All
+   - Right-click -> Extract All
    - Extract to Desktop
 
 ### Step 4.5: Install Python Packages
 
 1. Open **Command Prompt** as Administrator:
    - Search "cmd"
-   - Right-click → **"Run as administrator"**
+   - Right-click -> **"Run as administrator"**
 
 2. Navigate to bot folder:
    ```cmd
@@ -398,7 +398,7 @@ nixie-gold-bot-deploy/
 
 ### Step 4.6: Configure .env File
 
-1. Open **.env** file (right-click → Edit)
+1. Open **.env** file (right-click -> Edit)
 
 2. Make sure it has YOUR real credentials:
    ```
@@ -421,12 +421,12 @@ python health_check.py
 
 Expected output:
 ```
-✅ Python: 3.11.9
-✅ Virtual Env: Yes
-✅ .env file: Found
-✅ MT5 Import: Success
-✅ Telegram Import: Success
-✅ Logs directory: Found
+ Python: 3.11.9
+ Virtual Env: Yes
+ .env file: Found
+ MT5 Import: Success
+ Telegram Import: Success
+ Logs directory: Found
 ```
 
 ```cmd
@@ -435,9 +435,9 @@ python main.py
 ```
 
 Let it run for 2-3 minutes. You should see:
-- ✅ Connected to MT5
-- ✅ Fetching data
-- ✅ Scanning for signals
+- Connected to MT5
+- Fetching data
+- Scanning for signals
 - Maybe a startup message on Telegram
 
 Press `Ctrl+C` to stop.
@@ -469,7 +469,7 @@ Create `subscribers.json` on Desktop:
 
 ---
 
-## 🚀 Part 5: Start Bot Permanently
+## Part 5: Start Bot Permanently
 
 ### Method 1: Using Launcher (Recommended)
 
@@ -479,11 +479,11 @@ python launcher.py
 ```
 
 The launcher will:
-- ✅ Start your bot
-- ✅ Monitor it continuously
-- ✅ Restart if it crashes
-- ✅ Log everything
-- ✅ Prevent infinite restart loops
+- Start your bot
+- Monitor it continuously
+- Restart if it crashes
+- Log everything
+- Prevent infinite restart loops
 
 **Keep this Command Prompt window open!**
 
@@ -522,12 +522,12 @@ Both stay open and running!
 Instead:
 1. Just **close the Remote Desktop window** (click X on YOUR computer)
 2. Or click **"Disconnect"** from the Windows start menu
-3. Server keeps running 24/7 ✅
-4. Your bot keeps scanning ✅
+3. Server keeps running 24/7
+4. Your bot keeps scanning
 
 ---
 
-## 📊 Part 6: Monitoring & Maintenance
+## Part 6: Monitoring & Maintenance
 
 ### Reconnecting to Check on Bot
 
@@ -553,10 +553,10 @@ powershell -command "Get-Content logs\trading.log -Tail 20"
 ### Telegram Monitoring
 
 Your bot sends:
-- ✅ Startup notification
-- ✅ Trading signals
-- ✅ Error alerts
-- ✅ Daily summaries
+- Startup notification
+- Trading signals
+- Error alerts
+- Daily summaries
 
 ### Weekly Maintenance
 
@@ -597,7 +597,7 @@ Or just double-click **start_bot.bat** again!
 
 ---
 
-## 💰 Part 7: Set Up Billing Alerts (Important!)
+## Part 7: Set Up Billing Alerts (Important!)
 
 Protect yourself from unexpected charges:
 
@@ -609,7 +609,7 @@ Protect yourself from unexpected charges:
 
 3. Click **"Billing preferences"** (left sidebar)
 
-4. Check ✅ **"Receive Free Tier Usage Alerts"**
+4. Check **"Receive Free Tier Usage Alerts"**
 
 5. Enter your email
 
@@ -641,17 +641,17 @@ Check weekly:
 
 ---
 
-## 🔒 Part 8: Security Best Practices
+## Part 8: Security Best Practices
 
 ### 8.1: Restrict RDP Access
 
-1. Go to **EC2 → Security Groups**
+1. Go to **EC2 -> Security Groups**
 
 2. Click your security group
 
 3. Edit **"Inbound rules"**
 
-4. RDP rule → Change source to **"My IP"**
+4. RDP rule -> Change source to **"My IP"**
 
 5. Save
 
@@ -661,7 +661,7 @@ Now only YOUR IP can connect!
 
 Monthly:
 1. Reconnect to server
-2. Windows Update → Check for updates
+2. Windows Update -> Check for updates
 3. Install important updates
 4. Restart if needed (bot will auto-restart)
 
@@ -684,7 +684,7 @@ Weekly:
 
 ---
 
-## 🎯 Part 9: Optimization Tips
+## Part 9: Optimization Tips
 
 ### 9.1: Reduce Memory Usage
 
@@ -726,7 +726,7 @@ If memory > 80% full:
 
 ---
 
-## 🆘 Part 10: Troubleshooting
+## Part 10: Troubleshooting
 
 ### Bot Not Starting
 
@@ -751,7 +751,7 @@ python main.py
 
 1. Open MT5 manually
 2. Check login status (bottom-right)
-3. Tools → Options → Expert Advisors
+3. Tools -> Options -> Expert Advisors
 4. Verify "Allow algorithmic trading" is checked
 5. Restart MT5
 
@@ -773,7 +773,7 @@ Check:
 - Check instance is **Running** (not stopped)
 - Verify correct Public DNS
 - Check security group allows RDP from your IP
-- Reboot instance: Actions → Instance state → Reboot
+- Reboot instance: Actions -> Instance state -> Reboot
 
 ### Instance Stopped Unexpectedly
 
@@ -785,13 +785,13 @@ Reasons:
 Fix:
 1. Go to EC2 Dashboard
 2. Select instance
-3. Instance state → Start instance
+3. Instance state -> Start instance
 4. Wait for "Running" status
 5. Reconnect and restart bot
 
 ---
 
-## 📋 Quick Reference Commands
+## Quick Reference Commands
 
 ```cmd
 # Navigate to bot
@@ -818,7 +818,7 @@ Ctrl + C
 
 ---
 
-## ✅ Success Checklist
+## Success Checklist
 
 After setup, verify:
 
@@ -841,22 +841,22 @@ After setup, verify:
 
 ---
 
-## 🎓 What You Learned
+## What You Learned
 
 You now have:
-- ✅ Cloud server running 24/7
-- ✅ Automated trading bot monitoring markets
-- ✅ Auto-restart if crashes
-- ✅ Telegram notifications
-- ✅ Proper logging
-- ✅ Secure setup
-- ✅ Cost monitoring
+- Cloud server running 24/7
+- Automated trading bot monitoring markets
+- Auto-restart if crashes
+- Telegram notifications
+- Proper logging
+- Secure setup
+- Cost monitoring
 
-**Total cost: $0** for first 12 months! 🎉
+**Total cost: $0** for first 12 months!
 
 ---
 
-## 📞 Need Help?
+## Need Help?
 
 **Common issues solved:**
 - See troubleshooting section above
@@ -870,6 +870,6 @@ You now have:
 
 ---
 
-**🎉 Congratulations! Your bot is now running 24/7 in the cloud!**
+**Congratulations! Your bot is now running 24/7 in the cloud!**
 
-Made with ❤️ by Blessing Omoregie (@nixiestone)
+Made with by Blessing Omoregie (@nixiestone)

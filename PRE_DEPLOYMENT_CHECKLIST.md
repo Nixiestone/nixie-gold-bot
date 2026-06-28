@@ -1,10 +1,10 @@
-# ✅ Pre-Deployment Checklist
+# Pre-Deployment Checklist
 
 ## Before deploying to AWS, complete this checklist!
 
 ---
 
-## 📋 Local Testing Complete
+## Local Testing Complete
 
 - [ ] Bot runs on local machine without errors
 - [ ] MT5 connects successfully
@@ -18,7 +18,7 @@
 
 ---
 
-## 🔐 Credentials & Security
+## Credentials & Security
 
 - [ ] `.env` file has all real credentials (not placeholders!)
 - [ ] Telegram bot token is correct
@@ -31,7 +31,7 @@
 
 ---
 
-## 💰 Account & Risk Settings
+## Account & Risk Settings
 
 - [ ] Using **demo account** for first deployment
 - [ ] Account balance in `.env` matches actual balance
@@ -44,7 +44,7 @@
 
 ---
 
-## 📊 Strategy Understanding
+## Strategy Understanding
 
 - [ ] Read and understand the full README
 - [ ] Know all 6 conditions for signal generation
@@ -57,7 +57,7 @@
 
 ---
 
-## 🛠️ Files Ready for Upload
+## Files Ready for Upload
 
 - [ ] All `.py` files present and tested
 - [ ] `launcher.py` created
@@ -71,7 +71,7 @@
 
 ---
 
-## ☁️ AWS Prerequisites
+## AWS Prerequisites
 
 - [ ] AWS account created
 - [ ] Credit card verified (for identity)
@@ -85,7 +85,7 @@
 
 ---
 
-## 📱 Communication Setup
+## Communication Setup
 
 - [ ] Phone number works for 2FA
 - [ ] Email notifications enabled
@@ -97,17 +97,17 @@
 
 ---
 
-## 🧪 Testing Completed
+## Testing Completed
 
 **Local Tests:**
-- [ ] `python config.py` → Passes ✅
-- [ ] `python data/data_handler.py` → Connects ✅
-- [ ] `python indicators/technical.py` → Calculates ✅
-- [ ] `python strategy/signal_generator.py` → Analyzes ✅
-- [ ] `python execution/telegram_bot.py` → Sends ✅
-- [ ] `python health_check.py` → All green ✅
-- [ ] `python main.py` → Runs 10+ minutes ✅
-- [ ] `python launcher.py` → Auto-restarts ✅
+- [ ] `python config.py` -> Passes
+- [ ] `python data/data_handler.py` -> Connects
+- [ ] `python indicators/technical.py` -> Calculates
+- [ ] `python strategy/signal_generator.py` -> Analyzes
+- [ ] `python execution/telegram_bot.py` -> Sends
+- [ ] `python health_check.py` -> All green
+- [ ] `python main.py` -> Runs 10+ minutes
+- [ ] `python launcher.py` -> Auto-restarts
 
 **Backtest:**
 - [ ] Ran backtest successfully
@@ -117,7 +117,7 @@
 
 ---
 
-## 📖 Documentation Review
+## Documentation Review
 
 - [ ] Read README.md completely
 - [ ] Read AWS_DEPLOYMENT.md completely
@@ -129,7 +129,7 @@
 
 ---
 
-## ⏱️ Time & Resources
+## Time & Resources
 
 - [ ] Have 60+ minutes for initial setup
 - [ ] Stable internet connection
@@ -141,7 +141,7 @@
 
 ---
 
-## 🎯 Expectations Set
+## Expectations Set
 
 - [ ] Understand bot is very selective
 - [ ] Comfortable with 0-3 signals per week
@@ -154,7 +154,7 @@
 
 ---
 
-## 💾 Backup Plan
+## Backup Plan
 
 - [ ] Have backup of all bot files
 - [ ] Saved `.env` file securely offline
@@ -165,7 +165,7 @@
 
 ---
 
-## 🚨 Emergency Contacts
+## Emergency Contacts
 
 - [ ] Know broker's support number
 - [ ] Have AWS support bookmarked
@@ -176,7 +176,7 @@
 
 ---
 
-## 📊 Monitoring Plan
+## Monitoring Plan
 
 **Daily:**
 - [ ] Will check Telegram for signals
@@ -197,9 +197,9 @@
 
 ---
 
-## ✅ Final Pre-Flight
+## Final Pre-Flight
 
-- [ ] Everything above is checked ✅
+- [ ] Everything above is checked
 - [ ] Feeling confident and prepared
 - [ ] Not rushed or uncertain
 - [ ] Ready to follow guide exactly
@@ -209,10 +209,10 @@
 
 ---
 
-## 🎯 Go/No-Go Decision
+## Go/No-Go Decision
 
 **GREEN LIGHT (Ready to Deploy):**
-- All checklist items are ✅
+- All checklist items are
 - Feeling confident
 - Have time to complete setup
 - Not distracted
@@ -225,7 +225,7 @@
 
 ---
 
-## 📞 If You're Not Sure
+## If You're Not Sure
 
 **Ask yourself:**
 
@@ -235,13 +235,13 @@
 4. Have I read all the documentation?
 5. Do I have 60+ minutes for AWS setup?
 
-**If any answer is "No"** → Test more locally first!
+**If any answer is "No"** -> Test more locally first!
 
-**If all answers are "Yes"** → You're ready! 🚀
+**If all answers are "Yes"** -> You're ready!
 
 ---
 
-## 🚀 Ready to Deploy?
+## Ready to Deploy?
 
 If everything is checked:
 
@@ -251,7 +251,7 @@ If everything is checked:
 4. **Don't skip any steps**
 5. **Take your time**
 
-**You got this! 💪**
+**You got this! **
 
 ---
 
@@ -263,6 +263,6 @@ If everything is checked:
 
 ---
 
-Made with ❤️ by Blessing Omoregie (@nixiestone)
+Made with by Blessing Omoregie (@nixiestone)
 
 *Safety first. Test thoroughly. Deploy confidently.*

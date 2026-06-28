@@ -85,6 +85,8 @@ resource "aws_instance" "trading_node" {
     telegram_chat_id   = var.telegram_chat_id
     neon_database_url  = var.neon_database_url
     account_balance    = var.account_balance
+    github_user        = var.github_user
+    github_token       = var.github_token
   })
 
   tags = {

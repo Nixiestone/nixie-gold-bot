@@ -44,11 +44,11 @@ class RegimeDetector:
     def get_regime_description(self, regime):
         """Get human-readable description of regime"""
         descriptions = {
-            'trending_bull': ' Strong Uptrend',
-            'trending_bear': ' Strong Downtrend',
-            'range': '↔  Range-bound',
-            'breakout_pending': ' Breakout Pending',
-            'unknown': ' Unknown'
+            'trending_bull': 'Strong Uptrend',
+            'trending_bear': 'Strong Downtrend',
+            'range': 'Range-bound',
+            'breakout_pending': 'Breakout Pending',
+            'unknown': 'Unknown'
         }
         return descriptions.get(regime, regime)
 

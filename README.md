@@ -22,6 +22,7 @@ An advanced quantitative trading system for gold (XAU/USD) that combines technic
 - [Backtesting](#backtesting)
 - [Live Trading](#live-trading)
 - [AWS Deployment (24/7 Trading)](#aws-deployment)
+- [Distributed Infrastructure](#distributed-infrastructure)
 - [Risk Management](#risk-management)
 - [Troubleshooting](#troubleshooting)
 - [Performance](#performance)
@@ -55,59 +56,59 @@ Most trading bots try to trade every small move. This one doesn't. It's built on
 ## Key Features
 
 ### Core Trading Features
-- ** Sniper Entry System** - Only trades when all conditions align perfectly
-- ** Multi-Timeframe Analysis** - Combines H4 for bias and M15 for entries
-- ** Liquidity Detection** - Identifies stop hunts and sweep patterns
-- ** Regime Classification** - Adapts to trending, ranging, and breakout conditions
-- ** Smart Money Concepts** - Trades like institutions, not retail
+- **Sniper Entry System** - Only trades when all conditions align perfectly
+- **Multi-Timeframe Analysis** - Combines H4 for bias and M15 for entries
+- **Liquidity Detection** - Identifies stop hunts and sweep patterns
+- **Regime Classification** - Adapts to trending, ranging, and breakout conditions
+- **Smart Money Concepts** - Trades like institutions, not retail
 
 ### Technical Features
-- **🤖 Machine Learning Integration** - Optional AI-powered signal filtering
-- **📱 Telegram Notifications** - Get instant alerts on your phone
-- **🔄 Automated Execution** - Optional auto-trading capability
-- **📊 Comprehensive Backtesting** - Test on years of historical data
-- **📝 Trade Logging** - Automatic tracking for ML training
+- **Machine Learning Integration** - Optional AI-powered signal filtering
+- **Telegram Notifications** - Get instant alerts on your phone
+- **Automated Execution** - Optional auto-trading capability
+- **Comprehensive Backtesting** - Test on years of historical data
+- **Trade Logging** - Automatic tracking for ML training
 
 ### Risk Management
-- **💰 Dynamic Position Sizing** - Based on account balance and risk %
-- **🛡️ Strict Stop Losses** - Never exceed 30 pips
-- **🎯 Multiple Take Profits** - TP1, TP2, TP3 with partial closes
-- **📉 Drawdown Protection** - Conservative risk per trade (1-2%)
+- **Dynamic Position Sizing** - Based on account balance and risk %
+- **Strict Stop Losses** - Never exceed 30 pips
+- **Multiple Take Profits** - TP1, TP2, TP3 with partial closes
+- **Drawdown Protection** - Conservative risk per trade (1-2%)
 
 ---
 
-##  How It Works
+## How It Works
 
 ### The 6-Point Confluence System
 
 The bot only generates a signal when ALL these conditions are met:
 
-1. **Market Regime** 
+1. **Market Regime**
    - Identifies if market is trending, ranging, or breaking out
    - Only trades in favorable conditions
    - Uses ADX and Bollinger Bands
 
-2. **Trading Session** 
+2. **Trading Session**
    - Only trades during London/NY sessions
    - High liquidity periods (08:00-21:00 GMT)
    - Avoids low-volume Asian hours
 
-3. **Structural Level** 
+3. **Structural Level**
    - Price must be near a key level (PDH, PDL, Asian range, Fibs)
    - Levels where institutions have orders
    - Maximum 20 pips away
 
-4. **Liquidity Sweep** 
+4. **Liquidity Sweep**
    - Detects stop hunts above/below levels
    - Price breaks level then reverses quickly
    - Classic smart money move
 
-5. **Momentum Confirmation** 
+5. **Momentum Confirmation**
    - RSI shows extremes or divergence
    - Stochastic confirms with crossover
    - MACD supports the direction
 
-6. **Risk/Reward** 
+6. **Risk/Reward**
    - Minimum 1.5:1 reward-to-risk ratio
    - Stop loss under 30 pips
    - Multiple profit targets
@@ -116,7 +117,7 @@ The bot only generates a signal when ALL these conditions are met:
 
 ---
 
-##  Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -160,7 +161,7 @@ python main.py
 
 ---
 
-##  Installation
+## Installation
 
 ### Step 1: Clone the Repository
 
@@ -205,7 +206,7 @@ pip install -r requirements.txt
 2. Open an account with Exness broker (or any demo broker acconut for testing)
 3. Login to MT5
 4. Verify `XAUUSDm` symbol exists in Market Watch
-5. Enable algo trading: Tools → Options → Expert Advisors → Allow automated trading
+5. Enable algo trading: Tools -> Options -> Expert Advisors -> Allow automated trading
 
 ### Step 5: Create Telegram Bot
 
@@ -308,7 +309,7 @@ RISK_PERCENT = 2.0
 
 ---
 
-##  Multi-User Telegram Broadcasting
+## Multi-User Telegram Broadcasting
 
 Want to share signals with multiple users? The bot supports broadcasting to unlimited subscribers!
 
@@ -321,7 +322,7 @@ Want to share signals with multiple users? The bot supports broadcasting to unli
 
 ### Enable Multi-User Mode
 
-**Method 1: Interactive (Users Subscribe Themselves) ⭐ Recommended**
+**Method 1: Interactive (Users Subscribe Themselves) Recommended**
 
 ```bash
 # Start the interactive bot
@@ -389,15 +390,15 @@ bot.remove_subscriber(chat_id=123456789)
 
 ### Privacy & Security
 
-- ✅ Subscriber data stored locally in `subscribers.json`
-- ✅ File automatically added to `.gitignore`
-- ✅ Users can unsubscribe anytime with `/stop`
-- ✅ Bot auto-removes blocked/deleted accounts
-- ⚠️ Anyone with bot link can subscribe (use `/stop` to remove unwanted subscribers)
+- Subscriber data stored locally in `subscribers.json`
+- File automatically added to `.gitignore`
+- Users can unsubscribe anytime with `/stop`
+- Bot auto-removes blocked/deleted accounts
+- Anyone with bot link can subscribe (use `/stop` to remove unwanted subscribers)
 
 ---
 
-## 🎮 Usage
+## Usage
 
 ### Development Mode (Testing)
 
@@ -412,11 +413,11 @@ python main.py
 ```
 
 **What happens:**
-- ✅ Connects to MT5
-- ✅ Scans for signals
-- ✅ Shows analysis in terminal
-- ❌ Does NOT send Telegram alerts
-- ❌ Does NOT execute trades
+- Connects to MT5
+- Scans for signals
+- Shows analysis in terminal
+- Does NOT send Telegram alerts
+- Does NOT execute trades
 
 ### Production Mode (Live Signals)
 
@@ -431,14 +432,14 @@ python main.py
 ```
 
 **What happens:**
-- ✅ Connects to MT5
-- ✅ Scans for signals
-- ✅ Sends alerts to Telegram
-- ❌ Does NOT auto-execute (unless enabled)
+- Connects to MT5
+- Scans for signals
+- Sends alerts to Telegram
+- Does NOT auto-execute (unless enabled)
 
 ### Auto-Trading Mode (Advanced)
 
-**⚠️ WARNING:** Only enable after thorough testing on demo account!
+**WARNING:** Only enable after thorough testing on demo account!
 
 ```python
 # In config.py:
@@ -449,10 +450,10 @@ python main.py
 ```
 
 **What happens:**
-- ✅ Automatically executes trades
-- ✅ Places stop loss and take profit
-- ✅ Manages positions
-- ⚠️ Uses REAL money!
+- Automatically executes trades
+- Places stop loss and take profit
+- Manages positions
+- Uses REAL money!
 
 ### Running 24/7
 
@@ -475,7 +476,7 @@ nohup python main.py > output.log 2>&1 &
 
 ---
 
-##  Strategy Explained
+## Strategy Explained
 
 ### The Philosophy
 
@@ -522,7 +523,7 @@ These are where orders cluster and reversals often occur.
 
 ---
 
-## 🤖 Machine Learning
+## Machine Learning
 
 ### How It Works
 
@@ -651,18 +652,18 @@ Temporarily relaxes parameters to generate more trades for analysis.
 
 ---
 
-## ☁️ AWS Deployment
+## AWS Deployment
 
 ### Run Your Bot 24/7 for FREE (First 12 Months)
 
 Want your bot to run continuously without keeping your computer on? Deploy to AWS!
 
 **What you get:**
-- ✅ 750 hours/month FREE (enough for 24/7)
-- ✅ Windows Server in the cloud
-- ✅ No more keeping your PC on
-- ✅ Professional setup
-- ✅ Auto-restart on crashes
+- 750 hours/month FREE (enough for 24/7)
+- Windows Server in the cloud
+- No more keeping your PC on
+- Professional setup
+- Auto-restart on crashes
 
 ### Quick Start
 
@@ -703,17 +704,94 @@ Want your bot to run continuously without keeping your computer on? Deploy to AW
 
 ---
 
-## 🛡️ Risk Management
+## Distributed Infrastructure
+
+### Cloud-Native Trading Pipeline
+
+Alongside the single-process bot, the project ships a fully distributed deployment that runs the
+same strategy as independent microservices connected by a Kafka event-streaming pipeline. This is
+the production-grade runtime: the monolithic bot is untouched and still works for local use, while
+the distributed stack is built for 24/7 operation on a single AWS free-tier instance.
+
+**What you get:**
+- Multi-stage event pipeline on Kafka topics (`raw.ticks` -> `processed.signals` -> `executed.orders`)
+- Three asyncio microservices with a sub-50ms end-to-end signal latency target
+- Full Infrastructure-as-Code (OpenTofu/Terraform) - one command provisions everything
+- Real-time observability with Prometheus and a custom Grafana trading dashboard
+- Runs at $0 on AWS Free Tier (t3.micro + Neon PostgreSQL + Alpha Vantage)
+
+### Architecture
+
+```
+Alpha Vantage (intraday -> daily+quote -> simulation fallback)
+        |
+        v   Kafka topics: raw.ticks -> processed.signals -> executed.orders
+        |
+  tick-ingestion -> signal-processor -> order-execution
+                                            |
+                                            +-> Telegram + Neon PostgreSQL
+
+  Prometheus scrape -> Grafana dashboards
+```
+
+### The Services
+
+- **tick-ingestion** - Polls Alpha Vantage for XAU/USD data, simulates per-tick prices between bars,
+  and publishes to the `raw.ticks` topic. Degrades gracefully from intraday to daily+quote to pure
+  simulation so the pipeline never goes dark.
+- **signal-processor** - Consumes ticks, rebuilds M15/H4 OHLCV windows, runs the same 6-point
+  confluence logic (reused from `services/shared/`), and publishes signals to `processed.signals`.
+- **order-execution** - Consumes signals, sends Telegram alerts, and records both the signal and the
+  resulting order in Neon PostgreSQL, then publishes to `executed.orders`.
+
+### Technology Stack
+
+- **Kafka broker:** Redpanda (Kafka-compatible, ~250 MB RAM - fits the free-tier box)
+- **Orchestration:** k3s (lightweight single-node Kubernetes)
+- **IaC:** OpenTofu (open-source Terraform) in `infra/`
+- **Database:** Neon PostgreSQL free tier (`signals` and `orders` tables, see `infra/schema.sql`)
+- **Observability:** Prometheus + Grafana (`k8s/monitoring/`, dashboard in `k8s/dashboards/`)
+- **Images:** Built and pushed to GHCR by GitHub Actions (`.github/workflows/build-images.yml`)
+
+### Security Built In
+
+- SSH and the Grafana/Prometheus ports are locked to your IP - Terraform refuses `0.0.0.0/0`
+- No secrets in git (Terraform state, tfvars, and `.env` are ignored); Kubernetes secrets are
+  created at deploy time and never committed
+- IMDSv2 enforced, encrypted root volume, default-deny ingress NetworkPolicies
+- Grafana admin password randomly generated per deploy and stored as a Kubernetes secret
+
+### Deploy It
+
+1. **Local smoke test:**
+   ```bash
+   cp .env.example .env   # fill in your keys
+   docker compose up --build
+   ```
+
+2. **Cloud deployment:**
+   ```bash
+   cd infra && tofu init && tofu apply
+   ```
+
+3. **Full guide:** **[DISTRIBUTED.md](DISTRIBUTED.md)** - architecture, deployment, security notes,
+   and the free-tier data caveat.
+
+**Cost:** $0 on AWS Free Tier (t3.micro, 750 hours/month)
+
+---
+
+## Risk Management
 
 ### Safety First
 
 **Before going live:**
-1. ✅ Run on demo account for 30+ days
-2. ✅ Achieve 60%+ win rate on demo
-3. ✅ Understand every component
-4. ✅ Test with minimum position sizes
-5. ✅ Have emergency stop plan
-6. ✅ Never risk more than you can afford to lose
+1. Run on demo account for 30+ days
+2. Achieve 60%+ win rate on demo
+3. Understand every component
+4. Test with minimum position sizes
+5. Have emergency stop plan
+6. Never risk more than you can afford to lose
 
 ### Position Management
 
@@ -769,7 +847,7 @@ ENVIRONMENT = 'development'  # Switches to dry-run mode
 
 ---
 
-##  Risk Management
+## Risk Management
 
 ### Position Sizing Formula
 
@@ -793,11 +871,11 @@ Never risk more than 1-2% of your account on a single trade. This ensures:
 - Stay in the game long-term
 
 **20 consecutive losses at 1% risk:**
-- Account: $10,000 → $8,179 (18% drawdown)
+- Account: $10,000 -> $8,179 (18% drawdown)
 - Still recoverable
 
 **20 consecutive losses at 5% risk:**
-- Account: $10,000 → $3,585 (64% drawdown)
+- Account: $10,000 -> $3,585 (64% drawdown)
 - Nearly wiped out
 
 ### Take Profit Strategy
@@ -831,7 +909,7 @@ Never risk more than 1-2% of your account on a single trade. This ensures:
 
 ---
 
-##  Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -852,7 +930,7 @@ Never risk more than 1-2% of your account on a single trade. This ensures:
 
 **Solutions:**
 1. Open MT5 Market Watch
-2. Right-click → Show All
+2. Right-click -> Show All
 3. Search for your broker's gold symbol
 4. Common names: `XAUUSDm`, `XAUUSD`, `GOLDm`, `GOLD`
 5. Update `SYMBOL` in `.env` file
@@ -955,7 +1033,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Whether it's bug fixes, new features, or documentation improvements.
 
@@ -994,7 +1072,7 @@ git push origin feature/my-feature
 
 ---
 
-##  Disclaimer
+## Disclaimer
 
 **IMPORTANT: Please read carefully before using this software.**
 
@@ -1053,7 +1131,7 @@ By using this software, you acknowledge that:
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Blessing Omoregie**
 
@@ -1069,29 +1147,29 @@ This project represents countless hours of backtesting, forward testing, and ref
 ### Support the Project
 
 If you find this bot helpful:
-- ⭐ Star the repository
-- 🐛 Report bugs and issues
-- 💡 Suggest improvements
-- 🔀 Contribute code
-- 📢 Share with others
+- Star the repository
+- Report bugs and issues
+- Suggest improvements
+- Contribute code
+- Share with others
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 **In summary:**
-- ✅ Commercial use allowed
-- ✅ Modification allowed
-- ✅ Distribution allowed
-- ✅ Private use allowed
-- ❌ No liability
-- ❌ No warranty
+- Commercial use allowed
+- Modification allowed
+- Distribution allowed
+- Private use allowed
+- No liability
+- No warranty
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - The quantitative trading community for sharing knowledge
 - Technical analysis pioneers who developed the indicators used
@@ -1100,7 +1178,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📝 Version History
+## Version History
 
 **v1.0.0** - Initial Release
 - Multi-timeframe analysis
@@ -1113,7 +1191,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🚦 Status
+## Status
 
 **Active Development** - Regularly maintained and updated.
 
@@ -1127,7 +1205,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📬 Contact
+## Contact
 
 Got questions? Found a bug? Want to collaborate?
 

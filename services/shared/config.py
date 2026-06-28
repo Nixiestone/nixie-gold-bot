@@ -10,7 +10,7 @@ load_dotenv()
 # --- Market data ---
 ALPHA_VANTAGE_KEY = os.getenv('ALPHA_VANTAGE_KEY', '')
 SYMBOL = os.getenv('SYMBOL', 'XAUUSD')
-POLL_INTERVAL_SECONDS = int(os.getenv('POLL_INTERVAL_SECONDS', 3480))  # 58 min → 25 calls/day
+POLL_INTERVAL_SECONDS = int(os.getenv('POLL_INTERVAL_SECONDS', 3480))  # 58 min -> 25 calls/day
 
 # --- Kafka ---
 KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'redpanda:9092')

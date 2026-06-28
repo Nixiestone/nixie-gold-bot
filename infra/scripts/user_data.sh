@@ -71,6 +71,20 @@ sleep 5
 # ConfigMaps and Secrets
 kubectl apply -f k8s/configmaps/trading-config.yaml
 
+# GHCR image-pull secret (only needed if the GHCR packages are private).
+# Harmless to create even for public images; deployments reference it by name.
+if [ -n "${github_token}" ]; then
+  kubectl create secret docker-registry ghcr-pull \
+    --namespace trading \
+    --docker-server=ghcr.io \
+    --docker-username="${github_user}" \
+    --docker-password="${github_token}" \
+    --dry-run=client -o yaml | kubectl apply -f -
+  echo "Created ghcr-pull secret for private image pulls."
+else
+  echo "No github_token provided — assuming public GHCR images."
+fi
+
 # NetworkPolicies (default-deny ingress + allowlist)
 kubectl apply -f k8s/network-policies.yaml
 

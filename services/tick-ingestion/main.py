@@ -3,7 +3,7 @@ Tick Ingestion Service
 Polls Alpha Vantage FX_INTRADAY for XAU/USD 5-min bars, simulates per-tick data,
 and publishes to Kafka topic raw.ticks.
 
-Free tier budget: 25 API calls/day → poll every 58 min (24 calls) + 1 startup call.
+Free tier budget: 25 API calls/day -> poll every 58 min (24 calls) + 1 startup call.
 """
 import asyncio
 import json

@@ -24,7 +24,7 @@ if not handler.connect_mt5():
     print("[ERROR] Failed to connect to MT5")
     exit()
 
-print("\n📥 Fetching recent data...")
+print("\nFetching recent data...")
 df_h4 = handler.get_gold_data('H4', 500)
 df_m15 = handler.get_gold_data('M15', 1000)
 
@@ -96,26 +96,26 @@ for i in range(-100, 0):
         continue
 
 print(f"\nCondition Analysis (out of ~100 bars checked):")
-print(f"  ✓ Favorable Regime:     {favorable_count:3d} bars ({favorable_count}%)")
-print(f"  ✓ Trading Session OK:   {session_ok_count:3d} bars ({session_ok_count}%)")
-print(f"  ✓ Near Key Level:       {level_near_count:3d} bars ({level_near_count}%)")
-print(f"  ✓ Liquidity Sweep:      {sweep_count:3d} bars ({sweep_count}%)")
-print(f"  ✓ RSI Extreme:          {rsi_ok_count:3d} bars ({rsi_ok_count}%)")
+print(f"  - Favorable Regime:     {favorable_count:3d} bars ({favorable_count}%)")
+print(f"  - Trading Session OK:   {session_ok_count:3d} bars ({session_ok_count}%)")
+print(f"  - Near Key Level:       {level_near_count:3d} bars ({level_near_count}%)")
+print(f"  - Liquidity Sweep:      {sweep_count:3d} bars ({sweep_count}%)")
+print(f"  - RSI Extreme:          {rsi_ok_count:3d} bars ({rsi_ok_count}%)")
 
 # Calculate probability of all conditions meeting
 all_conditions = (favorable_count/100) * (session_ok_count/100) * (level_near_count/100) * (sweep_count/100) * (rsi_ok_count/100) * 100
 
-print(f"\n📈 Probability of ALL conditions meeting: ~{all_conditions:.2f}%")
+print(f"\nProbability of ALL conditions meeting: ~{all_conditions:.2f}%")
 
 if all_conditions < 1:
     print("\n[WARN]  Strategy is VERY SELECTIVE (< 1% of bars qualify)")
     print("This means:")
-    print("  ✓ GOOD: High quality signals only")
-    print("  ✗ BAD: Very few trading opportunities")
-    print("\n💡 Options:")
+    print("  GOOD: High quality signals only")
+    print("  BAD: Very few trading opportunities")
+    print("\nOptions:")
     print("  1. Keep strict (recommended) - wait for perfect setups")
-    print("  2. Relax RSI thresholds: 35→40 and 65→60")
-    print("  3. Increase level detection range: 20→30 pips")
+    print("  2. Relax RSI thresholds: 35->40 and 65->60")
+    print("  3. Increase level detection range: 20->30 pips")
 
 # Show current indicator values
 print("\n" + "=" * 60)
