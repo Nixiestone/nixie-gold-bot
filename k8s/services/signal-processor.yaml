@@ -19,7 +19,8 @@ spec:
     spec:
       containers:
         - name: signal-processor
-          image: ghcr.io/nixiestone/nixie-gold-bot/signal-processor:latest
+          image: ghcr.io/nixiestone/nixie-gold-bot/signal-processor:__IMAGE_TAG__
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8001  # Prometheus metrics
             - containerPort: 8080  # Health

@@ -1,17 +1,9 @@
 -- Neon PostgreSQL schema for Nixie Gold Bot distributed services
 -- Run this once against your Neon database before deploying.
-
-CREATE TABLE IF NOT EXISTS ticks (
-    id        BIGSERIAL PRIMARY KEY,
-    ts        TIMESTAMPTZ NOT NULL,
-    bid       DOUBLE PRECISION NOT NULL,
-    ask       DOUBLE PRECISION NOT NULL,
-    volume    DOUBLE PRECISION,
-    source    TEXT DEFAULT 'alpha_vantage_sim',
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE INDEX idx_ticks_ts ON ticks (ts DESC);
+--
+-- Note: raw ticks are intentionally NOT persisted here — they live only in the
+-- Kafka raw.ticks topic (1h retention). Persisting every simulated tick would
+-- exhaust the Neon free-tier storage quota. Only signals and orders are stored.
 
 CREATE TABLE IF NOT EXISTS signals (
     id          BIGSERIAL PRIMARY KEY,

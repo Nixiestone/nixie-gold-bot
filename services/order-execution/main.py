@@ -41,6 +41,9 @@ execution_latency = Histogram(
 )
 telegram_success_rate = Gauge('order_execution_telegram_success_rate', 'Rolling Telegram success rate')
 
+# Liveness flag — flipped True once Kafka is connected, False on fatal error.
+_ready = False
+
 _sent_count = 0
 _total_count = 0
 
@@ -97,26 +100,41 @@ async def send_telegram(bot: Bot, signal: dict) -> bool:
         return False
 
 
-async def write_to_db(pool: asyncpg.Pool, signal: dict) -> None:
+async def write_to_db(pool: asyncpg.Pool, signal: dict, tg_ok: bool) -> int | None:
+    """Insert the signal and its corresponding order row in one transaction."""
     try:
         async with pool.acquire() as conn:
-            signal_id = await conn.fetchval(
-                """
-                INSERT INTO signals (ts, direction, entry, sl, tp1, tp2, tp3, confidence, regime, level_name)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-                RETURNING id
-                """,
-                datetime.fromtimestamp(signal.get('processed_ts', time.time()), tz=timezone.utc),
-                signal.get('signal'),
-                signal.get('entry_price'),
-                signal.get('stop_loss'),
-                signal.get('take_profit_1'),
-                signal.get('take_profit_2'),
-                signal.get('take_profit_3'),
-                float(signal.get('confidence', 0)),
-                signal.get('regime'),
-                signal.get('level_name'),
-            )
+            async with conn.transaction():
+                signal_id = await conn.fetchval(
+                    """
+                    INSERT INTO signals
+                        (ts, direction, entry, sl, tp1, tp2, tp3, confidence, regime, level_name, session, latency_ms)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                    RETURNING id
+                    """,
+                    datetime.fromtimestamp(signal.get('processed_ts', time.time()), tz=timezone.utc),
+                    signal.get('signal'),
+                    signal.get('entry_price'),
+                    signal.get('stop_loss'),
+                    signal.get('take_profit_1'),
+                    signal.get('take_profit_2'),
+                    signal.get('take_profit_3'),
+                    float(signal.get('confidence', 0)),
+                    signal.get('regime'),
+                    signal.get('level_name'),
+                    signal.get('session'),
+                    signal.get('latency_ms'),
+                )
+                await conn.execute(
+                    """
+                    INSERT INTO orders (signal_id, telegram_sent_at, telegram_ok, status)
+                    VALUES ($1, $2, $3, $4)
+                    """,
+                    signal_id,
+                    datetime.now(tz=timezone.utc) if tg_ok else None,
+                    tg_ok,
+                    'sent' if tg_ok else 'failed',
+                )
             db_writes.inc()
             return signal_id
     except Exception as e:
@@ -138,10 +156,10 @@ async def process_signal(
     tg_ok = await send_telegram(bot, signal)
     _update_success_rate(tg_ok)
 
-    # DB write
+    # DB write (signal + order rows)
     signal_id = None
     if pool:
-        signal_id = await write_to_db(pool, signal)
+        signal_id = await write_to_db(pool, signal, tg_ok)
 
     # Publish to executed.orders
     order = {
@@ -164,7 +182,9 @@ async def process_signal(
 
 
 async def health_handler(_req):
-    return web.Response(text='ok')
+    if _ready:
+        return web.Response(text='ok')
+    return web.Response(status=503, text='kafka not connected')
 
 
 async def health_server() -> None:
@@ -193,8 +213,10 @@ async def main() -> None:
     )
     producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BROKER)
 
+    global _ready
     await consumer.start()
     await producer.start()
+    _ready = True
     log.info(f'Connected to Kafka at {KAFKA_BROKER}')
 
     bot = Bot(token=TELEGRAM_BOT_TOKEN) if TELEGRAM_BOT_TOKEN else None
@@ -212,7 +234,11 @@ async def main() -> None:
             health_server(),
             consume_loop(consumer, bot, pool, producer),
         )
+    except Exception:
+        _ready = False
+        raise
     finally:
+        _ready = False
         await consumer.stop()
         await producer.stop()
         if pool:

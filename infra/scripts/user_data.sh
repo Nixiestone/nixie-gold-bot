@@ -71,6 +71,9 @@ sleep 5
 # ConfigMaps and Secrets
 kubectl apply -f k8s/configmaps/trading-config.yaml
 
+# NetworkPolicies (default-deny ingress + allowlist)
+kubectl apply -f k8s/network-policies.yaml
+
 # Kafka (Redpanda)
 kubectl apply -f k8s/kafka/redpanda.yaml
 
@@ -82,14 +85,30 @@ kubectl wait --for=condition=ready pod -l app=redpanda -n trading --timeout=180s
 # Monitoring stack
 kubectl apply -f k8s/monitoring/prometheus.yaml
 kubectl apply -f k8s/dashboards/dashboard-configmap.yaml
+
+# Generate a random Grafana admin password and store it as a Secret (never hardcoded)
+GRAFANA_PASS=$(head -c 18 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 20)
+kubectl create secret generic grafana-admin \
+  --namespace monitoring \
+  --from-literal=admin-password="$GRAFANA_PASS" \
+  --dry-run=client -o yaml | kubectl apply -f -
+echo "Grafana admin password (save this): $GRAFANA_PASS"
+
 kubectl apply -f k8s/monitoring/grafana.yaml
 
-# Trading services (images pulled from GHCR)
-kubectl apply -f k8s/services/tick-ingestion.yaml
-kubectl apply -f k8s/services/signal-processor.yaml
-kubectl apply -f k8s/services/order-execution.yaml
+# Trading services (images pulled from GHCR).
+# Pin the image tag to the exact commit deployed (CI publishes <sha> tags).
+IMAGE_TAG=$(git rev-parse HEAD)
+for svc in tick-ingestion signal-processor order-execution; do
+  sed "s/__IMAGE_TAG__/$IMAGE_TAG/g" "k8s/services/$svc.yaml" | kubectl apply -f -
+done
 
 echo "=== All manifests applied ==="
-echo "Grafana: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):30300"
-echo "Prometheus: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):30090"
+# IMDSv2 requires a session token
+IMDS_TOKEN=$(curl -sX PUT "http://169.254.169.254/latest/api/token" \
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 60")
+PUBLIC_IP=$(curl -s -H "X-aws-ec2-metadata-token: $IMDS_TOKEN" \
+  http://169.254.169.254/latest/meta-data/public-ipv4)
+echo "Grafana: http://$PUBLIC_IP:30300"
+echo "Prometheus: http://$PUBLIC_IP:30090"
 echo "Bootstrap complete at: $(date)"

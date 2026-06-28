@@ -65,7 +65,7 @@ spec:
           args:
             - --config.file=/etc/prometheus/prometheus.yml
             - --storage.tsdb.path=/prometheus
-            - --storage.tsdb.retention.time=24h
+            - --storage.tsdb.retention.time=6h
             - --web.enable-lifecycle
           ports:
             - containerPort: 9090
@@ -87,7 +87,7 @@ spec:
             name: prometheus-config
         - name: storage
           emptyDir:
-            sizeLimit: 2Gi
+            sizeLimit: 1Gi
 ---
 apiVersion: v1
 kind: Service

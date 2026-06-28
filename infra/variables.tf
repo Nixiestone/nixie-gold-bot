@@ -40,9 +40,9 @@ variable "account_balance" {
 }
 
 variable "instance_type" {
-  description = "EC2 instance type — t2.micro is free tier eligible"
+  description = "EC2 instance type — t3.micro (burstable, free-tier eligible 750 hrs/mo) handles the stack better than t2.micro"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "root_volume_size_gb" {
@@ -52,7 +52,21 @@ variable "root_volume_size_gb" {
 }
 
 variable "allowed_ssh_cidr" {
-  description = "CIDR block allowed to SSH into the instance"
+  description = "CIDR block allowed to SSH into the instance. Set to YOUR_IP/32 — do NOT use 0.0.0.0/0."
   type        = string
-  default     = "0.0.0.0/0"  # Restrict to your IP in production
+
+  validation {
+    condition     = var.allowed_ssh_cidr != "0.0.0.0/0"
+    error_message = "Refusing to open SSH to the world. Set allowed_ssh_cidr to your IP, e.g. 203.0.113.4/32."
+  }
+}
+
+variable "allowed_ui_cidr" {
+  description = "CIDR block allowed to reach Grafana (30300) and Prometheus (30090). Set to YOUR_IP/32."
+  type        = string
+
+  validation {
+    condition     = var.allowed_ui_cidr != "0.0.0.0/0"
+    error_message = "Refusing to expose Grafana/Prometheus to the world. Set allowed_ui_cidr to your IP, e.g. 203.0.113.4/32."
+  }
 }

@@ -1,5 +1,11 @@
 # Redpanda — Kafka-compatible broker, C++-based, ~250MB RAM vs 700MB+ for JVM Kafka
 # Single-broker KRaft mode, no ZooKeeper needed.
+#
+# NOTE: `--mode=dev-container` relaxes production safety (fsync/durability) and is
+# chosen deliberately for a single-node free-tier demo where the node has no
+# redundancy anyway. Topic retention is short (1h) and data is reproducible from
+# the upstream feed. For a durable multi-broker setup, drop dev-container mode,
+# raise --memory, and run >=3 replicas on dedicated nodes.
 apiVersion: v1
 kind: Service
 metadata:

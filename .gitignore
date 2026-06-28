@@ -82,3 +82,14 @@ Desktop.ini
 *.zip
 *.tar.gz
 *.rar
+
+# Terraform / OpenTofu
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+*.tfvars
+infra/terraform.tfstate*
+
+# Injected secrets (never commit)
+**/secrets-values.env
