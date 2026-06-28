@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trading-config
+  namespace: trading
+data:
+  KAFKA_BROKER: "redpanda.trading.svc.cluster.local:9092"
+  SYMBOL: "XAUUSD"
+  POLL_INTERVAL_SECONDS: "3480"
+  TICKS_PER_BAR: "12"
+  XAU_SPREAD: "0.10"
+  MIN_H4_BARS: "60"
+  MIN_M15_BARS: "100"
+  MAX_TICKS: "50000"
+  LOG_LEVEL: "INFO"
+  ENVIRONMENT: "production"
+---
+# Secrets template — fill in real values before applying
+# kubectl create secret generic trading-secrets -n trading \
+#   --from-literal=ALPHA_VANTAGE_KEY=your_key \
+#   --from-literal=TELEGRAM_BOT_TOKEN=your_token \
+#   --from-literal=TELEGRAM_CHAT_ID=your_chat_id \
+#   --from-literal=NEON_DATABASE_URL=postgresql://user:pass@host/db \
+#   --from-literal=ACCOUNT_BALANCE=10000
+apiVersion: v1
+kind: Secret
+metadata:
+  name: trading-secrets
+  namespace: trading
+type: Opaque
+stringData:
+  ALPHA_VANTAGE_KEY: "REPLACE_ME"
+  TELEGRAM_BOT_TOKEN: "REPLACE_ME"
+  TELEGRAM_CHAT_ID: "REPLACE_ME"
+  NEON_DATABASE_URL: "REPLACE_ME"
+  ACCOUNT_BALANCE: "10000"

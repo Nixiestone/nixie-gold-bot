@@ -1,0 +1,111 @@
+# Redpanda — Kafka-compatible broker, C++-based, ~250MB RAM vs 700MB+ for JVM Kafka
+# Single-broker KRaft mode, no ZooKeeper needed.
+apiVersion: v1
+kind: Service
+metadata:
+  name: redpanda
+  namespace: trading
+spec:
+  selector:
+    app: redpanda
+  ports:
+    - name: kafka
+      port: 9092
+      targetPort: 9092
+    - name: admin
+      port: 9644
+      targetPort: 9644
+  clusterIP: None  # headless for StatefulSet DNS
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redpanda
+  namespace: trading
+spec:
+  serviceName: redpanda
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redpanda
+  template:
+    metadata:
+      labels:
+        app: redpanda
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9644"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: redpanda
+          image: redpandadata/redpanda:v23.3.18
+          args:
+            - redpanda
+            - start
+            - --smp=1
+            - --memory=256M
+            - --reserve-memory=0M
+            - --overprovisioned
+            - --node-id=0
+            - --kafka-addr=PLAINTEXT://0.0.0.0:9092
+            - --advertise-kafka-addr=PLAINTEXT://redpanda.trading.svc.cluster.local:9092
+            - --pandaproxy-addr=0.0.0.0:8082
+            - --rpc-addr=0.0.0.0:33145
+            - --advertise-rpc-addr=redpanda.trading.svc.cluster.local:33145
+            - --mode=dev-container
+          ports:
+            - containerPort: 9092
+            - containerPort: 9644
+            - containerPort: 8082
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 300Mi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/redpanda/data
+          readinessProbe:
+            exec:
+              command:
+                - rpk
+                - cluster
+                - health
+            initialDelaySeconds: 20
+            periodSeconds: 10
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 5Gi
+---
+# Init job: create the three Kafka topics after Redpanda is ready
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-topics
+  namespace: trading
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: rpk
+          image: redpandadata/redpanda:v23.3.18
+          command:
+            - /bin/sh
+            - -c
+            - |
+              sleep 30
+              rpk topic create raw.ticks --brokers redpanda.trading.svc.cluster.local:9092 \
+                --topic-config retention.ms=3600000
+              rpk topic create processed.signals --brokers redpanda.trading.svc.cluster.local:9092 \
+                --topic-config retention.ms=3600000
+              rpk topic create executed.orders --brokers redpanda.trading.svc.cluster.local:9092 \
+                --topic-config retention.ms=86400000
