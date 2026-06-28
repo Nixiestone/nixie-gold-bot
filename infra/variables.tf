@@ -39,6 +39,23 @@ variable "account_balance" {
   default     = "10000"
 }
 
+variable "github_user" {
+  description = "GitHub username used to pull images from GHCR"
+  type        = string
+  default     = "nixiestone"
+}
+
+variable "github_token" {
+  description = <<-EOT
+    GitHub token (classic, scope read:packages) used to pull the service images
+    from GHCR. Leave empty if you have made the GHCR packages public — anonymous
+    pulls work and the imagePullSecret is simply ignored.
+  EOT
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
 variable "instance_type" {
   description = "EC2 instance type — t3.micro (burstable, free-tier eligible 750 hrs/mo) handles the stack better than t2.micro"
   type        = string

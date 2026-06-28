@@ -50,7 +50,7 @@ class Backtester:
             self.equity_curve = [initial_capital]
             
             # Get historical data
-            print("📥 Fetching historical data...")
+            print("Fetching historical data...")
             df_h4 = self.handler.get_gold_data('H4', 5000)  # Large dataset
             df_m15 = self.handler.get_gold_data('M15', 10000)
             
@@ -125,7 +125,7 @@ class Backtester:
                 print("  3. Parameters need adjustment")
                 print(f"\nBars analyzed: {signals_checked}")
                 print(f"Signals generated: 0")
-                print("\n💡 Try:")
+                print("\nTry:")
                 print("  - Running backtest on different date range")
                 print("  - Adjusting RSI thresholds in config.py")
                 print("  - Checking if data quality is good")

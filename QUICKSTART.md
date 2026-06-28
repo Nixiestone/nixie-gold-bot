@@ -1,10 +1,10 @@
-# ⚡ Quick Start Guide - Nixie's Gold Bot
+# Quick Start Guide - Nixie's Gold Bot
 
 Get your bot running in 30 minutes! Follow this checklist step by step.
 
 ---
 
-## 📋 Pre-Flight Checklist
+## Pre-Flight Checklist
 
 Before you begin, make sure you have:
 
@@ -16,7 +16,7 @@ Before you begin, make sure you have:
 
 ---
 
-## 🚀 Local Setup (Test on Your Computer)
+## Local Setup (Test on Your Computer)
 
 ### Step 1: Get the Code (2 minutes)
 
@@ -59,8 +59,8 @@ pip install -r requirements.txt
 
 1. Open MetaTrader 5
 2. Login to your account
-3. Tools → Options → Expert Advisors
-4. Check ✅ "Allow algorithmic trading"
+3. Tools -> Options -> Expert Advisors
+4. Check "Allow algorithmic trading"
 5. Verify `XAUUSDm` symbol exists in Market Watch
 
 ### Step 5: Configure Bot (5 minutes)
@@ -86,11 +86,11 @@ ENVIRONMENT=development
 ```bash
 # Test configuration
 python config.py
-# Should show: ✅ Configuration validated
+# Should show: Configuration validated
 
 # Test MT5 connection
 python data/data_handler.py
-# Should show: ✅ Connected to MetaTrader 5
+# Should show: Connected to MetaTrader 5
 
 # Test Telegram
 python execution/telegram_bot.py
@@ -109,10 +109,10 @@ python main.py
 ```
 
 **You should see:**
-- ✅ Connected to MT5
-- ✅ Scanning for signals
-- ✅ Market analysis output
-- ❌ No Telegram alerts (development mode)
+- Connected to MT5
+- Scanning for signals
+- Market analysis output
+- No Telegram alerts (development mode)
 
 **Let it run for 5-10 minutes**, then `Ctrl+C` to stop.
 
@@ -130,7 +130,7 @@ When ready for real signals:
    python main.py
    ```
 
-3. Now you'll get Telegram alerts! 📱
+3. Now you'll get Telegram alerts!
 
 ### Step 9: Enable Multi-User (Optional)
 
@@ -158,14 +158,14 @@ All subscribers get every signal automatically!
 
 ---
 
-## ☁️ AWS Deployment (24/7 Operation)
+## AWS Deployment (24/7 Operation)
 
 ### Why Deploy to AWS?
 
-- ✅ Bot runs 24/7 even when your PC is off
-- ✅ Professional setup
-- ✅ Free for 12 months
-- ✅ Auto-restart on crashes
+- Bot runs 24/7 even when your PC is off
+- Professional setup
+- Free for 12 months
+- Auto-restart on crashes
 
 ### Quick Deploy Steps
 
@@ -181,7 +181,7 @@ All subscribers get every signal automatically!
    - Sign up (credit card needed for verification)
 
 3. **Launch server:**
-   - EC2 → Launch Instance
+   - EC2 -> Launch Instance
    - Windows Server 2022
    - t2.micro (free tier)
    - Create key pair (save it!)
@@ -201,11 +201,11 @@ All subscribers get every signal automatically!
 
 7. **Disconnect** (bot keeps running!)
 
-📖 **Full guide:** [AWS_DEPLOYMENT.md](AWS_DEPLOYMENT.md)
+ **Full guide:** [AWS_DEPLOYMENT.md](AWS_DEPLOYMENT.md)
 
 ---
 
-## 📊 What to Expect
+## What to Expect
 
 ### First Week (Learning)
 
@@ -230,7 +230,7 @@ All subscribers get every signal automatically!
 
 ---
 
-## 🎯 Quick Commands Reference
+## Quick Commands Reference
 
 ```bash
 # Development mode (no signals sent)
@@ -257,7 +257,7 @@ python launcher.py
 
 ---
 
-## ⚙️ Quick Settings
+## Quick Settings
 
 ### Conservative (Fewer signals, higher win rate)
 
@@ -288,7 +288,7 @@ RISK_PERCENT = 2.0
 
 ---
 
-## 🆘 Quick Troubleshooting
+## Quick Troubleshooting
 
 ### No Signals?
 
@@ -330,7 +330,7 @@ pip install -r requirements.txt
 
 ---
 
-## 📱 Daily Workflow
+## Daily Workflow
 
 ### Morning Routine (2 minutes)
 
@@ -356,7 +356,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🎓 Next Steps
+## Next Steps
 
 After quickstart works:
 
@@ -369,7 +369,7 @@ After quickstart works:
 
 ---
 
-## 📊 Expected Timeline
+## Expected Timeline
 
 **Day 1:** Setup and testing (this guide)
 **Week 1:** Learn patterns, wait for signals
@@ -379,7 +379,7 @@ After quickstart works:
 
 ---
 
-## ✅ Success Criteria
+## Success Criteria
 
 You're ready to go live when:
 
@@ -394,7 +394,7 @@ You're ready to go live when:
 
 ---
 
-## 💡 Pro Tips
+## Pro Tips
 
 1. **Be Patient** - Strategy is selective by design
 2. **Trust the Process** - Don't override bot decisions
@@ -404,7 +404,7 @@ You're ready to go live when:
 
 ---
 
-## 📞 Get Help
+## Get Help
 
 - **Issues:** [GitHub Issues](https://github.com/nixiestone/nixie-gold-bot/issues)
 - **Questions:** [Discussions](https://github.com/nixiestone/nixie-gold-bot/discussions)
@@ -413,8 +413,8 @@ You're ready to go live when:
 
 ---
 
-**🎉 You're all set! Happy trading!**
+**You're all set! Happy trading!**
 
-Made with ❤️ by Blessing Omoregie (@nixiestone)
+Made with by Blessing Omoregie (@nixiestone)
 
 Remember: Trade smart. Trade safe. Trade systematically.

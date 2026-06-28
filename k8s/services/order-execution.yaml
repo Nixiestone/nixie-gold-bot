@@ -17,6 +17,8 @@ spec:
         prometheus.io/port: "8002"
         prometheus.io/path: "/metrics"
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull
       containers:
         - name: order-execution
           image: ghcr.io/nixiestone/nixie-gold-bot/order-execution:__IMAGE_TAG__

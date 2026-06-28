@@ -39,10 +39,8 @@ class TelegramNotifier:
     def _format_signal_message(self, signal):
         """Format signal into beautiful Telegram message"""
         
-        direction_emoji = "🟢" if signal['signal'] == 'LONG' else "🔴"
-        
         message = f"""
-{direction_emoji} *NIXIE'S GOLD TRADING SIGNAL*
+*NIXIE'S GOLD TRADING SIGNAL*
 
 *Direction:* {signal['signal']}
 *Confidence:* {signal['confidence']}%

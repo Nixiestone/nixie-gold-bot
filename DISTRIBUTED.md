@@ -6,14 +6,15 @@ The existing monolithic bot (`main.py`, `data/`, MT5 integration) is unchanged �
 is an alternative, cloud-native runtime that reuses the same strategy logic.
 
 ```
-Alpha Vantage (intraday → daily+quote → simulation fallback)
-      │
-      ▼  Kafka topics: raw.ticks → processed.signals → executed.orders
- ┌─────────────┐   ┌──────────────────┐   ┌────────────────────┐
- │tick-ingestion│→ │ signal-processor │→ │ order-execution    │
- └─────────────┘   └──────────────────┘   └────────────────────┘
-      │                    │                      │ Telegram + Neon PostgreSQL
-      └──────── Prometheus scrape → Grafana dashboards ─────────┘
+Alpha Vantage (intraday -> daily+quote -> simulation fallback)
+        |
+        v   Kafka topics: raw.ticks -> processed.signals -> executed.orders
+        |
+  tick-ingestion -> signal-processor -> order-execution
+                                            |
+                                            +-> Telegram + Neon PostgreSQL
+
+  Prometheus scrape -> Grafana dashboards
 ```
 
 ## Components
@@ -42,6 +43,7 @@ Alpha Vantage (intraday → daily+quote → simulation fallback)
    telegram_bot_token = "..."
    telegram_chat_id   = "..."
    neon_database_url  = "postgresql://...?sslmode=require"
+   github_token       = "ghp_..."        # optional: only if GHCR packages are private (scope read:packages)
    ```
 4. **Deploy**: `cd infra && tofu init && tofu apply`.
 5. Outputs give the Grafana/Prometheus URLs; the Grafana admin password is
@@ -52,7 +54,7 @@ Alpha Vantage (intraday → daily+quote → simulation fallback)
 ```bash
 cp .env.example .env   # fill in keys
 docker compose up --build
-# Grafana → http://localhost:3000  (admin / trading2024 locally)
+# Grafana at http://localhost:3000  (admin / trading2024 locally)
 ```
 
 ## Security notes
@@ -74,7 +76,7 @@ every plan. `tick-ingestion` degrades gracefully:
 
 Check `kubectl logs deploy/tick-ingestion -n trading` to see which tier is active.
 
-## ⚠️ Legacy monolith warning
+## Legacy monolith warning
 
 The original `config.py` sets `AUTO_TRADE = True` (line 74). The **cloud services do
 not execute live trades** — `order-execution` only sends Telegram alerts and writes to

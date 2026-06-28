@@ -3,7 +3,7 @@ Signal Processor Service
 Consumes raw.ticks from Kafka, aggregates into M15/H4 OHLCV bars,
 runs the 6-point confluence signal logic, and publishes to processed.signals.
 
-Target: <50ms end-to-end tick → signal latency (asyncio + threadpool for NumPy).
+Target: <50ms end-to-end tick -> signal latency (asyncio + threadpool for NumPy).
 """
 import asyncio
 import json

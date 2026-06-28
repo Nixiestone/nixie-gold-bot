@@ -41,7 +41,7 @@ results = backtester.run_backtest(start_date, end_date, initial_capital=10000)
 
 if results:
     print("\n[SUCCESS] Backtest complete!")
-    print("\n💡 TIP: If you want stricter signals (higher quality), adjust:")
+    print("\nTIP: If you want stricter signals (higher quality), adjust:")
     print("   - RSI_OVERSOLD back to 35")
     print("   - RSI_OVERBOUGHT back to 65")
     print("   in config.py")
