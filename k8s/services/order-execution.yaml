@@ -19,7 +19,8 @@ spec:
     spec:
       containers:
         - name: order-execution
-          image: ghcr.io/nixiestone/nixie-gold-bot/order-execution:latest
+          image: ghcr.io/nixiestone/nixie-gold-bot/order-execution:__IMAGE_TAG__
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8002  # Prometheus metrics
             - containerPort: 8080  # Health

@@ -19,7 +19,8 @@ spec:
     spec:
       containers:
         - name: tick-ingestion
-          image: ghcr.io/nixiestone/nixie-gold-bot/tick-ingestion:latest
+          image: ghcr.io/nixiestone/nixie-gold-bot/tick-ingestion:__IMAGE_TAG__
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000  # Prometheus metrics
             - containerPort: 8080  # Health

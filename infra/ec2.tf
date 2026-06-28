@@ -27,21 +27,21 @@ resource "aws_security_group" "trading_node" {
     description = "SSH"
   }
 
-  # Grafana NodePort
+  # Grafana NodePort — restricted to operator IP
   ingress {
     from_port   = 30300
     to_port     = 30300
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.allowed_ui_cidr]
     description = "Grafana dashboard"
   }
 
-  # Prometheus NodePort
+  # Prometheus NodePort — restricted to operator IP
   ingress {
     from_port   = 30090
     to_port     = 30090
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.allowed_ui_cidr]
     description = "Prometheus"
   }
 
@@ -69,6 +69,14 @@ resource "aws_instance" "trading_node" {
     volume_type           = "gp2"
     volume_size           = var.root_volume_size_gb
     delete_on_termination = true
+    encrypted             = true
+  }
+
+  # Enforce IMDSv2 — mitigates SSRF-to-credential-theft
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
   }
 
   user_data = templatefile("${path.module}/scripts/user_data.sh", {

@@ -1,0 +1,79 @@
+# NetworkPolicies for the `trading` namespace.
+# k3s enforces these via its built-in kube-router netpol controller
+# (unless started with --disable-network-policy).
+#
+# Strategy: default-deny ingress, then allow only what's needed.
+# Egress is left open — services must reach Alpha Vantage, Telegram, Neon,
+# kube-dns, and Redpanda.
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: trading
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+# Allow the three services to reach Redpanda on the Kafka port (9092),
+# and allow Prometheus (monitoring ns) to scrape Redpanda admin metrics (9644).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-redpanda
+  namespace: trading
+spec:
+  podSelector:
+    matchLabels:
+      app: redpanda
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}            # any pod in the trading namespace
+      ports:
+        - protocol: TCP
+          port: 9092
+        - protocol: TCP
+          port: 33145
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - protocol: TCP
+          port: 9644
+---
+# Allow Prometheus (monitoring ns) and kubelet health probes to reach the
+# service pods on their metrics/health ports.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-metrics-and-health
+  namespace: trading
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values: [tick-ingestion, signal-processor, order-execution]
+  policyTypes:
+    - Ingress
+  ingress:
+    # Prometheus scrape from the monitoring namespace
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - protocol: TCP
+          port: 8000
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002
+    # Health probes (kubelet runs on the node, outside pod CIDR) — allow 8080
+    - ports:
+        - protocol: TCP
+          port: 8080

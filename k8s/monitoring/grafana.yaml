@@ -50,7 +50,10 @@ spec:
             - containerPort: 3000
           env:
             - name: GF_SECURITY_ADMIN_PASSWORD
-              value: "trading2024"
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-admin
+                  key: admin-password
             - name: GF_USERS_ALLOW_SIGN_UP
               value: "false"
             - name: GF_ANALYTICS_REPORTING_ENABLED

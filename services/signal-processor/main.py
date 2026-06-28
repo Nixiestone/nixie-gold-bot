@@ -42,6 +42,9 @@ processing_latency = Histogram(
 buffer_size_gauge = Gauge('signal_processor_tick_buffer_size', 'Current tick buffer size')
 last_signal_ts = Gauge('signal_processor_last_signal_timestamp', 'Unix timestamp of last signal')
 
+# Liveness flag — flipped True once Kafka is connected, False on fatal error.
+_ready = False
+
 
 class TickBuffer:
     """Rolling buffer of raw ticks; resamples into OHLCV DataFrames on demand."""
@@ -170,7 +173,9 @@ async def process_tick(
 
 
 async def health_handler(_req):
-    return web.Response(text='ok')
+    if _ready:
+        return web.Response(text='ok')
+    return web.Response(status=503, text='kafka not connected')
 
 
 async def health_server() -> None:
@@ -194,8 +199,10 @@ async def main() -> None:
     )
     producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BROKER)
 
+    global _ready
     await consumer.start()
     await producer.start()
+    _ready = True
     log.info(f'Connected to Kafka at {KAFKA_BROKER}')
 
     buffer = TickBuffer()
@@ -206,7 +213,11 @@ async def main() -> None:
             health_server(),
             consume_loop(consumer, producer, buffer, executor),
         )
+    except Exception:
+        _ready = False
+        raise
     finally:
+        _ready = False
         await consumer.stop()
         await producer.stop()
         executor.shutdown(wait=False)
